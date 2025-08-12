@@ -1,0 +1,33 @@
+.my-account-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.my-account-box {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.my-account-info p {
+  margin: 0.5rem 0;
+}
+
+.my-account-title {
+  margin-bottom: 1rem;
+  color: #333;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .my-account-container {
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,262 @@
+.student-home {
+  width: 100%;
+  padding: 20px 100px;
+  margin-top: 20px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.card-student {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
+}
+
+.card-student.activities li {
+  margin-bottom: 2rem;
+}
+
+.profile {
+  width: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile .header {
+  display: flex;
+  gap: 20px;
+}
+
+.avatar {
+  font-size: 50px;
+}
+
+.details h2 {
+  margin: 0;
+}
+
+.time-card {
+  width: 55%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+.time-box {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #4c40f7;
+}
+
+.exam-join-box {
+  width: 70%;
+}
+
+.exam-join-box h4 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.exam-join-form-student {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.exam-join-form-student input {
+  padding: 10px;
+  border: solid 1px #dadada;
+  outline: none;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.time-box p{
+  font-size: 1.1rem;
+}
+
+.exam-join-form-student input:focus {
+  border: none;
+  border-bottom: 2px solid #4c40f7;
+  background-color: #f5f7ff;
+}
+
+.student-exam-join {
+  background-color: #4c40f7;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.student-exam-join:hover {
+  background-color: #3b34c2;
+}
+
+.down-row-student {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.left-column {
+  width: 68%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.activities ul {
+  list-style: disc;
+  padding-left: 20px;
+  text-align: left;
+  margin-top: 10px;
+}
+
+.activities h4 {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 1.4rem;
+}
+
+.stats-student {
+  display: flex;
+  gap: 20px;
+}
+
+.student-marks {
+  width: 70%;
+  text-align: left;
+}
+
+.marks-table {
+  width: 100%;
+  border-collapse: collapse; /*  To collapse borders of adjacent cells merge*/
+  margin-top: 20px;
+}
+
+.marks-table th,
+.marks-table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.marks-table th {
+  font-weight: 300;
+  font-size: 1.2rem;
+  color: #000000;
+}
+
+.total-submissions-student {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center
+ 
+}
+
+.total-submissions-student h4 {
+  margin-bottom: 10px;
+  color: #353535;
+  font-size: 1.1rem;
+}
+
+.total-submissions-student p {
+  font-size: 3rem;
+  
+  color: #4c40f7;
+}
+
+.calendar {
+  width: 30%;
+}
+
+.exam-join-err{
+  color:red;
+  border:1px solid red;
+  border-radius: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  margin-top: 0.5rem
+
+}
+
+
+@media (max-width: 768px) {
+  .student-home {
+    padding: 16px;
+  }
+
+  .row,
+  .down-row-student {
+    flex-direction: column;
+  }
+
+  .profile,
+  .time-card,
+  .exam-join-box,
+  .left-column,
+  .stats-student,
+  .student-marks,
+  .total-submissions-student {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  
+  .calendar{
+    display:none
+  }
+  .time-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .exam-join-form-student {
+    flex-direction: column;
+  }
+
+  .time-box {
+    font-size: 1.4rem;
+  }
+
+  .marks-table th,
+  .marks-table td {
+    font-size: 0.95rem;
+    padding: 8px;
+  }
+
+  .total-submissions-student p {
+    font-size: 2.4rem;
+  }
+
+  .student-exam-join {
+    font-size: 0.95rem;
+    padding: 8px;
+  }
+
+  .details h2 {
+    font-size: 1.1rem;
+  }
+
+  .details p {
+    font-size: 0.9rem;
+  }
+}

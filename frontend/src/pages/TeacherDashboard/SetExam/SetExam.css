@@ -1,0 +1,237 @@
+.set-exam-wrapper {
+  background: #f5f6fa;
+  padding: 2rem 0;
+}
+
+.set-exam-container {
+  width: 95%;
+  max-width: 1200px;
+  margin: auto;
+  background: #fff;
+  border-radius: 20px;
+  padding: 2rem 2.5rem;
+  font-family: "Poppins", sans-serif;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.set-exam-container h2 {
+  text-align: center;
+  color: #4c40f7;
+  margin-bottom: 2rem;
+}
+
+.exam-form input,
+.exam-form textarea,
+.exam-form select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 14px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+.exam-form textarea{
+  resize: vertical; 
+
+}
+.marking-scheme {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.mark-box {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.mark-box.green {
+  background-color: #e4f9e4;
+}
+
+.mark-box.red {
+  background-color: #ffe4e4;
+}
+
+.mark-box.gray {
+  background-color: #f0f0f0;
+}
+
+.mark-box label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.question-block {
+  background: #f9f9ff;
+  border-radius: 15px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
+  margin-top: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.remove-question{
+  font-size: 1.5rem;
+  color:red;
+
+}
+
+.question-no-and-delete{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+.question-type {
+  margin-bottom: 1rem;
+}
+
+.options-section input {
+  margin-bottom: 10px;}
+
+.remove-option-and-add-option{
+  display: flex;
+  gap: 1rem ;
+
+}
+.correct-ans-label {
+
+  margin-bottom: 10px;
+}
+
+.remove-option-and-add-option .small-btn {
+  background-color: #4c40f7;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.remove-option-and-add-option .small-btn:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+
+.small-btn:hover {
+  background-color: #372fc2;
+}
+
+.add-q-btn {
+  background-color: #47b39c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.submit-btn {
+  background-color: #4c40f7;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #372fc2;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+/* MODAL CSS */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.modal-content h3 {
+  margin-bottom: 1rem;
+  color: #4c40f7;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+.modal-buttons .small-btn{
+  background-color: #4c40f7;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+
+}
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.time-info{
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.time-info-box{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem ;
+  padding: 0.5rem;
+  border-radius: 10px;
+  width:30%;
+  border: 1px solid #efefef;
+  background-color: #e4f9e4;
+}
+

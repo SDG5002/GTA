@@ -1,0 +1,104 @@
+.student-container {
+    max-width: 950px;
+  margin: 40px auto;
+  padding: 30px 50px 80px 50px;
+ 
+  border-radius: 12px;
+  background: #f7faff;
+}
+
+.student-page-heading {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #1e293b;
+  margin-bottom: 30px;
+}
+
+.student-exam-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.student-no-exam-text {
+  font-size: 1.1rem;
+  color: #888;
+}
+
+.student-exam-box {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  transition: 0.2s ease;
+  
+}
+
+.student-exam-box:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.student-top-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+  justify-content: space-between; 
+}
+
+.student-exam-number {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #475569;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.student-exam-detail {
+  flex-grow: 1;
+}
+
+.student-exam-title {
+  font-size: 1.9rem;
+  font-weight: 600;
+  margin:5px;
+  color: #509f06;
+}
+
+.student-exam-desc {
+  font-size: 1rem;
+  color: #666;
+}
+
+.student-exam-date {
+  font-size: 0.95rem;
+  color: #888;
+  white-space: nowrap;
+}
+
+.student-button-row {
+  display: flex;
+  justify-content:space-between;
+}
+
+.student-btn {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 8px;
+}
+
+.student-normal-btn {
+   background: #f1f5ff;
+  border: 1px solid #cbd5e1;
+  color: #1e3a8a;
+}
+
+.student-blue-btn {
+  background-color: #4c40f7;
+  color: #fff;
+  font-weight: 400;
+}

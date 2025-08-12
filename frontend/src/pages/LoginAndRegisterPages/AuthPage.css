@@ -1,0 +1,159 @@
+.auth-bg {
+
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+}
+
+.auth-page {
+ 
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.loginImg {
+  position: absolute; /* so it fills the parent area */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  object-fit: cover; /* crop proportionally to fill space */
+}
+
+
+
+.auth-card {
+  display: flex;
+  width: 800px;
+  height: 500px;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+
+.auth-left {
+  flex: 1;
+  position: relative;
+  background: white;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-left h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #7b5151;
+}
+.auth-left h1{
+  font-size: 3rem;
+  font-weight: 400;
+  color: #78515b;
+  margin-bottom: 10px;
+}
+.auth-left p {
+  font-size: 1rem;
+  max-width: 250px;
+  color: #555;
+}
+
+
+.abstract-shapes {
+  position: absolute;
+  inset: 0;
+  background:
+    url('data:image/svg+xml;utf8,<svg width="400" height="500" xmlns="http://www.w3.org/2000/svg"><path d="M0,400 Q150,350 300,500 L0,500 Z" fill="%23ffb3c6"/><path d="M0,0 Q100,150 250,0 L0,0 Z" fill="%23b3e5ff"/><circle cx="50" cy="100" r="10" fill="%23ffcc00"/><circle cx="100" cy="300" r="6" fill="%23000"/></svg>')
+    no-repeat center/cover;
+  opacity: 0.9;
+  z-index: -1;
+}
+
+.auth-right {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-right h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+
+.form-error {
+  background-color: #ffe6e6;
+  color: #ff4d4d;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #ff4d79;
+  outline: none;
+}
+
+
+.btn-primary,
+.auth-right button {
+  width: 100%;
+  background: #ff4d79;
+  color: white;
+  padding: 12px;
+  border-radius: 25px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.btn-primary:hover,
+.auth-right button:hover {
+  background: #e03e69;
+}
+
+
+.register-text {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.register-text a {
+  color: #ff4d79;
+  font-weight: bold;
+}
