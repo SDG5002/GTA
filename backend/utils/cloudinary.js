@@ -13,18 +13,20 @@ cloudinary.config({
 const uploadOnCloudinary = async (localFilePath) => {
     try{
         const response = await cloudinary.uploader.upload(localFilePath,{resource_type:"image"});
-        console.log("file uploaded successfully",response.url());
+        console.log("file uploaded successfully",response.secure_url);
         fs.unlinkSync(localFilePath);
         return response;
      }
     catch(err){
-
+        console.log(err)
         fs.unlinkSync(localFilePath);
         //throw out the temp file on the server as upload operation is failed 
         return null;
 
     }
 };
+
+export default uploadOnCloudinary;
 
 
 
