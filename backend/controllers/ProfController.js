@@ -51,6 +51,13 @@ export const uploadExam = wrapAsync(async (req, res, next) => {
     }
   }
 
+  // Inside uploadExam
+  const toUTC = (localDateTime) => new Date(localDateTime).toISOString();
+
+  examInfo.scheduledAt = toUTC(examInfo.scheduledAt);
+  examInfo.closeAt = toUTC(examInfo.closeAt);
+
+
 
 
   // Attach image URLs to corresponding questions
