@@ -67,7 +67,7 @@ export const uploadExam = wrapAsync(async (req, res, next) => {
     }
   }
 
-  
+console.log("JII",examInfo);
 
 
   const newExam = new Exam({
