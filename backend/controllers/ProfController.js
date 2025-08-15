@@ -51,15 +51,6 @@ export const uploadExam = wrapAsync(async (req, res, next) => {
     }
   }
 
- examInfo.scheduledAt = new Date(examInfo.scheduledAt).toISOString();
- examInfo.closeAt = new Date(examInfo.closeAt).toISOString();
-
-
-
-  console.log(examInfo)
-
-
-
 
   // Attach image URLs to corresponding questions
   if (req.files && req.files.length > 0) {
@@ -86,6 +77,8 @@ export const uploadExam = wrapAsync(async (req, res, next) => {
   });
 
   await newExam.save();
+
+  console.log("byyyy",newExam);
   user.exams.push(newExam._id);
 
 
@@ -119,7 +112,7 @@ export const getExams = wrapAsync(async (req, res, next) => {
    const exams = await Exam.find({ professor: _id });
   const examsSorted=exams.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
- 
+  console.log(examsSorted[0])
   res.status(200).json({
     message: "Exams fetched successfully",
     exams: examsSorted.map((examI) => ({
