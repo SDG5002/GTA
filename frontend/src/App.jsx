@@ -22,7 +22,7 @@ import MyAccountPage from './pages/MyAccountPage/MyAccountPage.jsx';
 import StudentReports from './pages/StudentDashboard/StudentReports/StudentReportsLanding/StudentReports.jsx';
 import StudentQuestionPaper from './pages/StudentDashboard/StudentReports/StudentQuestionPaper/StudentQuestionPaper.jsx';
 import EditExam from './pages/TeacherDashboard/TeacherReports/EditExam/EditExam.jsx';
-import ManageSessions from './pages/TeacherDashboard/TeacherReports/ManageSessions/manageSessions.jsx';
+import ManageSessions from './pages/TeacherDashboard/TeacherReports/ManageSessions/ManageSessions.jsx';
 import { Toaster } from 'react-hot-toast';
 
 
