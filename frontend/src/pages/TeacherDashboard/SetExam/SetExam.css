@@ -9,7 +9,7 @@
   margin: auto;
   background: #fff;
   border-radius: 20px;
-  padding: 2rem 2.5rem;
+  padding: 2rem 1rem;
   font-family: "Poppins", sans-serif;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
@@ -161,6 +161,11 @@
   margin-top: 1.5rem;
 }
 
+.q-image-input{
+  margin: 1rem 0;
+  background-color: white;
+}
+
 /* MODAL CSS */
 .modal-overlay {
   position: fixed;
@@ -235,3 +240,21 @@
   background-color: #e4f9e4;
 }
 
+@media (max-width: 720px) {
+  .time-info {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .time-info-box {
+    width: 100%;
+  }
+
+  .marking-scheme {
+    flex-direction: column;
+  }
+
+  .question-block {
+    padding: 0.8rem 1rem;
+  }
+}

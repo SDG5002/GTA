@@ -39,8 +39,14 @@ const ViewQuestionPaper = () => {
             <div className="ques-text">Q.{index + 1} {q.question}</div>
             <div className="marks-line">
               Marks: <b>{q.marks}</b> | Negative: <b>{q.negativeMarks}</b> | Unattempted: <b>{q.unattemptedMarks}</b>
+                {q.isDropped && <span className="dropped-q-teacher"> ( Dropped )</span>}
+                {q.isBonus && <span className="dropped-q-teacher"> ( Bonus )</span>}
             </div>
 
+            {q.imageUrl &&
+            <img src={q.imageUrl} alt={`Question image`} className="teacher-view-question-image"/>
+            }
+ 
             {q.type === "MCQ" ? (
               <div className="option-box">
                 {q.options.map((opt, i) => (

@@ -51,7 +51,7 @@ function LoginPage() {
         </div>
 
         <div className="auth-right">
-          <h2>Auth Login</h2>
+          <h2>Login</h2>
           {error && <div className="form-error">{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">

@@ -10,14 +10,29 @@
   font-size: 1.8rem;
   font-weight: bold;
    color: #509f06;
-  margin-bottom: 14px;
+   margin-bottom: 14px;
+   word-wrap: break-word;     
+   white-space: normal; 
 }
 
 .student-question-paper-line {
   font-size: 1rem;
   color: #334155;
   margin: 4px 0;
+  word-wrap: break-word;     
+  white-space: normal; 
 }
+
+  .student-question-paper-line.attempted {
+    font-size: 1rem;
+     color:#08873b;
+     padding :1rem 0;
+  }
+   .student-question-paper-line.score {
+     color:#630526;
+     font-size: 1rem;
+     font-weight: 500;
+  }
 
 .student-question-paper-list {
   display: flex;
@@ -104,4 +119,75 @@
   background: #e2e8f0;
   color: #475569;
   border: 1px solid #cbd5e1;
+}
+
+
+.student-view-question-image{
+  width:300px;
+  height:auto;
+  border-radius: 10px;
+  margin: 1rem;
+  display: block;
+}
+
+.dropped-q-student{
+  color:green;
+  font-weight: 600;
+}
+
+
+
+
+@media (max-width: 700px) {
+  .student-question-paper-container {
+    padding: 15px 20px;
+  }
+
+  .student-question-paper-title {
+    font-size: 1.4rem;
+     word-wrap: break-word;    
+  white-space: normal; 
+  }
+
+  .student-question-paper-line {
+    font-size: 0.9rem;
+    
+  }
+
+
+  .student-question-paper-list {
+    gap: 15px;
+  }
+
+  .student-question-paper-box {
+    padding: 12px;
+  }
+
+  .student-question-paper-question {
+    font-size: 1rem;
+  }
+
+  .student-question-paper-marks {
+    font-size: 0.85rem;
+  }
+
+  .student-question-paper-option {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .student-question-paper-text-answer {
+    font-size: 0.9rem;
+  }
+
+  .student-question-paper-your-answer {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .student-view-question-image {
+    width: 100%;
+    max-width: 250px;
+    margin: 0.5rem 0;
+  }
 }

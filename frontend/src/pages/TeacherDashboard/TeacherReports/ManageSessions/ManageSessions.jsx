@@ -3,6 +3,7 @@ import axiosInstance from "../../../../api/axiosInstance";
 import { useParams } from 'react-router-dom';
 import "./ManageSessions.css";
 import toast from "react-hot-toast";
+import { MdEditNote } from "react-icons/md";
 
 const ManageSessions = () => {
   const [data, setData] = useState(null);
@@ -55,7 +56,10 @@ const ManageSessions = () => {
 
   return (
     <div className="sessionpage-container">
-      <h1 className="sessionpage-title">{data?.examTitle || "Exam Sessions"}</h1>
+      <div className="sessionpage-header">
+      <MdEditNote  className="manage-session-icon"/> <h1 className="">Manage Sessions</h1>
+      </div>
+      <h1 className="sessionpage-title">Title: {data?.examTitle || "Exam Sessions"}</h1>
 
       <table className="sessionpage-table">
         <thead>

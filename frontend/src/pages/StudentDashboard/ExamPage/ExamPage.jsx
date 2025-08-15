@@ -1,11 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import "./ExamPage.css";
+import { FaClipboardList } from "react-icons/fa";
 
 import axiosInstance from "../../../api/axiosInstance.js";
 import { toast } from "react-hot-toast";
 
-
+import { RxCrossCircled } from "react-icons/rx";
 
 
 
@@ -20,6 +21,9 @@ const ExamPage = () => {
   const [startedAt, setStartedAt] = useState(null);
   const [lateJoin, setLateJoin] = useState(false);
   const switchCount = useRef(0);
+  const [submitted, setSubmitted] = useState(false);
+  const [subModal, setSubModal] = useState(false);
+  const [ruleModal,setRuleModal]=useState(false);
   
  const navigate = useNavigate();
   
@@ -35,7 +39,7 @@ useEffect(() => {
         toast.error("Please do not switch tabs. This is your first warning.");
       } else if (switchCount.current === 3) {
         toast.error("Final warning: Do not leave the exam tab!");
-      } else if (switchCount.current === 5) {
+      } else if (switchCount.current === 6) {
         autoSubmitExam();
         toast.error("Exam ended due to repeated tab switching.");
       }
@@ -203,6 +207,9 @@ useEffect(() => {
     const formattedResponses = getFormattedResponses();
     setStarted(false);
     setStartedAt(null);
+    setSubmitted(true);
+    setSubModal(false);
+     navigate("/student/thankyou");
     axiosInstance
       .post(
         `/student/submitExam/${examId}`,
@@ -210,8 +217,9 @@ useEffect(() => {
         { withCredentials: true }
       )
       .then(() => {
-        navigate("/student/thankyou");
+       
         toast.success("Exam submitted!");
+        setSubmitted(false);
     
       })
       .catch((err) => {
@@ -224,10 +232,11 @@ useEffect(() => {
     const formattedResponses = getFormattedResponses();
     setStarted(false);
     setStartedAt(null);
+     setSubmitted(true);
     axiosInstance
       .post(`/student/submitExam/${examId}`, { responses: formattedResponses }, { withCredentials: true })
       .then(() => {
-       
+        setSubmitted(false)
         navigate("/student/thankyou");
         toast.success("Exam auto-submitted.");
         
@@ -259,12 +268,37 @@ useEffect(() => {
     return <div className="error-box">ERROR: {error}</div>;
   }
 
-  return (
+ return (
     <div className={"exam-wrapper" + (started ? "-started" : "")}>
+      {ruleModal && 
+       <div class="exam-rules-modal-overlay">
+            <div class="exam-rules-modal">
+              <div className="top-rules">
+                <strong>Rules:</strong>
+                <RxCrossCircled onClick={()=>{setRuleModal(false)}} />
+              </div>
+                <ul>
+                  <li>Tab switching is not allowed. Repeated tab switches will lead to automatic submission of your exam.</li>
+                  <li>If your exam gets submitted accidentally, contact your professor immediately.</li>
+                </ul>
+            </div>
+        </div>
+      }
+      {subModal &&
+       <div className="exam-submit-modal-overlay">
+              <div className="exam-submit-modal">
+                Are you sure to submit exam?
 
+                <div className="exam-submit-modal-btns">
+                <button onClick={() => setSubModal(false)}>cancle</button>
+                <button onClick={handleSubmit}>Submit</button>
+                </div>
+              </div>
 
+      </div> }
+     
 
-      {!started || !exam || !exam.questions || exam.questions.length === 0 ? (
+      {(!started || !exam || !exam.questions || exam.questions.length === 0 )&& !submitted? (
         <>
         <img src="/images/greenBoard.png" alt="Start Exam" />
         <div className="start-section">
@@ -277,9 +311,14 @@ useEffect(() => {
               You joined late. The exam will close automatically at the scheduled time.
             </p>
           )}
-          <button className="start-btn" onClick={handleStart}>
+          <button className="start-btn" disabled={ruleModal} onClick={handleStart}>
             Start Exam
           </button>
+          <p className="rules-title" onClick={() => setRuleModal(true)}> <FaClipboardList />Rules</p>
+          
+         
+         
+
         </div>
         </>
       ) : (
@@ -309,7 +348,7 @@ useEffect(() => {
             </div>
           </div>
           <div className="mark-buttons">
-            <button className="mark-btn" type="button" onClick={handleSubmit}>
+            <button className="mark-btn" type="button" onClick={() => setSubModal(true)}>
               Submit
             </button>
           </div>
@@ -337,7 +376,15 @@ useEffect(() => {
             </div>
      
             <p className="question-text">{exam.questions[currentQ].question}</p>
+            
+            {exam.questions[currentQ]?.imageUrl &&
+             <div >
+              <img className="q-image" src={exam.questions[currentQ]?.imageUrl} alt="Question Image"/>
+              
+            </div> }
+
             <hr />
+           
 
             {exam.questions[currentQ].type === "MCQ" ? (
               <>
@@ -358,7 +405,8 @@ useEffect(() => {
                           checked={responses[qId] === opt}
                           onChange={() => handleChange(opt)}
                         />
-                        {opt}
+                        <p>{opt}</p>
+                       
                       </label>
                     );
                   })}
@@ -398,7 +446,7 @@ useEffect(() => {
               ← Previous
             </button>
             {currentQ === exam.questions.length - 1 ? (
-              <button type="button" className="submit-btn" onClick={handleSubmit}>
+              <button type="button" className="submit-btn" onClick={() => setSubModal(true)}>
                 Finish
               </button>
             ) : (

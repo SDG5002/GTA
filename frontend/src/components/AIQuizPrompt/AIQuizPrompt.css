@@ -12,14 +12,7 @@
   z-index: 999;
 }
 
-.ai-loader-container-overlay{
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: #33333324;
-}
+
 
 .ai-card {
   max-width: 900px;
@@ -143,15 +136,6 @@
 .ai-icon{
   color: #ffffff;
   font-size: 1.4rem;
-}
-.ai-loader {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #eb568d;
-  border-top: 4px solid transparent;
-  border-radius: 8px;
-  animation: spin 0.8s linear infinite;
-  margin: 20px auto; 
 }
 
 @keyframes spin {

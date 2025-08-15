@@ -36,6 +36,14 @@ const questionSchema = new Schema({
     type: Number, 
     default: 0 
   },
+
+  imagePublicId:{
+    type: String
+  },
+  imageUrl: {
+    type: String
+  }
+
 });
 
 const examSchema = new Schema({

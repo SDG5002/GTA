@@ -39,8 +39,30 @@ function WelcomePage() {
             <h3>Result Analytics</h3>
             <p>Smart analytics and result management to track academic performance and exam insights effortlessly.</p>
           </div>
+          
         </div>
       </div>
+     <div className="welcome-ai-box">
+      
+
+    
+        <div className="welcome-ai-info">
+           <h1 >Customizable Auto<br></br><span> AI Quiz Generator</span></h1>
+       
+        <ul>
+          <li> Save hours of manual work with instant AI-powered quiz generation.</li>
+          <li> Create quizzes on any topic in seconds.</li>
+          <li> Fully customizable - choose question types, difficulty levels, and number of questions.</li>
+          <li> Adapts to your audience for accurate, engaging, and time-efficient assessments.</li>
+        </ul>
+      </div>
+      
+        <div className="welcome-ai-img">
+          <img src="images/ai.png" alt="AI Image" />
+        </div>
+
+      </div>
+
 
       <div className="join-box">
         <div className="join-info">

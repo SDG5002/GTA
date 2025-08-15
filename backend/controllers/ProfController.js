@@ -5,6 +5,7 @@ import Exam from "../DB/models/ExamModel.js";
 import { sendMarksEmail } from "../utils/marksMailer.js";
 import ExamResponses from "../DB/models/ExamResponses.js";
 import gemini from "../utils/ai.js";
+import {deleteFromCloudinary,uploadOnCloudinary} from "../utils/cloudinary.js";
 
 
 const DATE_FORMAT_OPTIONS = {
@@ -18,41 +19,80 @@ const DATE_FORMAT_OPTIONS = {
   hour12: true
 };
 
+
+
 export const uploadExam = wrapAsync(async (req, res, next) => {
-  const { exam } = req.body;
+
   const { _id } = req.user;
-
   const user = await User.findById(_id);
-
-  if (!user) {
-    return next(new ExpressError(404, "User not found"));
-  }
-
+  if (!user) return next(new ExpressError(404, "User not found"));
   if (user.role !== "professor") {
     return next(new ExpressError(403, "Only professors can upload exams"));
   }
 
-  const exists = await Exam.findOne({ code: exam.code });
-  if (exists) {
-    return next(new ExpressError(400, "Exam code already exists"));
+    
+  //as our forma data is mixed with files and text it cant be directly parsed by the outer middleware in app.js
+  const examInfo = JSON.parse(req.body.examInfo);
+
+  const code=examInfo.code;
+
+  const isExistCode=await Exam.findOne({code:code});
+  if(isExistCode){
+    return next(new ExpressError(400, "Code already exists"));
+  }
+  const questions = [];
+
+  // Parse questions
+  for (let key in req.body) {
+    if (key.startsWith("questions")) {
+      const index = parseInt(key.replace("questions", ""));
+      questions[index] = JSON.parse(req.body[key]);
+    }
   }
 
-  exam.professor = _id;
 
-  const newExam = new Exam(exam);
+
+  // Attach image URLs to corresponding questions
+  if (req.files && req.files.length > 0) {
+    for (let i = 0; i < req.files.length; i++) {
+      const file = req.files[i];
+      const uploadResult = await uploadOnCloudinary(file.path);
+
+      const index = parseInt(file.fieldname.replace("images", ""));
+      console.log(index);
+      if (questions[index]) {
+        questions[index].imageUrl = uploadResult.secure_url;
+        questions[index].imagePublicId = uploadResult.public_id;
+      }
+    }
+  }
+
+  
+
+
+  const newExam = new Exam({
+    ...examInfo,
+    professor: _id,
+    questions
+  });
+
   await newExam.save();
-
   user.exams.push(newExam._id);
-  await user.save({ validateBeforeSave: false });
+
 
   const now = new Date();
-  const istDateTime = new Intl.DateTimeFormat('en-IN', DATE_FORMAT_OPTIONS).format(now);
+  const istDateTime = new Intl.DateTimeFormat("en-IN", DATE_FORMAT_OPTIONS).format(now);
 
-  user.history.push({ message: "Exam named " + exam.title + " with code : " + exam.code + " and password :" + exam.password + " was uploaded successfully at " + istDateTime + "."});
+  user.history.push({
+    message: `Exam named ${examInfo.title} with code: ${examInfo.code} and password: ${examInfo.password} was uploaded successfully at ${istDateTime}.`
+  });
 
   await user.save({ validateBeforeSave: false });
 
-  res.status(201).json({ message: "Exam uploaded successfully", examId: newExam._id });
+  res.status(201).json({
+    message: "Exam uploaded successfully",
+    examId: newExam._id
+  });
 });
 
 export const getExams = wrapAsync(async (req, res, next) => {
@@ -162,7 +202,7 @@ export const getAnalysis = wrapAsync(async (req, res, next) => {
 });
 
 export const getStats = wrapAsync(async (req, res, next) => {
-      const userId = req.user;
+      const userId = req.user._id;
       const user = await User.findById(userId);
 
       if (!user) return next(new ExpressError(404, "User not found"));
@@ -246,6 +286,19 @@ export const deleteExam = wrapAsync(async (req, res, next) => {
       }
     }
   );
+
+  console.log(exam)
+
+  //cloudinary delete
+  for (let i = 0; i < exam.questions.length; i++) {
+    if(exam.questions[i].imagePublicId){
+      await deleteFromCloudinary(exam.questions[i].imagePublicId);
+
+    }
+    
+  }
+
+
 
   
   await Exam.findByIdAndDelete(examId);

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../api/axiosInstance";
 import { useLocation } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
+import Loader from "../../../components/Loader/Loader";
 import toast from "react-hot-toast";
 
 function SetExam() {
@@ -11,6 +12,7 @@ function SetExam() {
   const [examSecurity, setExamSecurity] = useState({ code: "", password: "" });
   const [error, setError] = useState("");
   const [aiData, setAiData] = useState(null);
+  const [submit,setSubmit]=useState(false);
   const navigate = useNavigate();
 
   const location=useLocation();
@@ -25,6 +27,7 @@ function SetExam() {
       marks: 4,
       negativeMarks: -1,
       unattemptedMarks: 0,
+       image: null 
     },
   ]);
 
@@ -38,6 +41,7 @@ useEffect(() => {
       marks: 4,
       negativeMarks: -1,
       unattemptedMarks: 0,
+      image: null
     }));
     setQuestions(formattedQuestions);
   }
@@ -94,6 +98,16 @@ useEffect(() => {
     updated.splice(index,1);
     setQuestions(updated);
     
+  }
+
+  const handleQImageChange = (index, e) => {
+        const updated = [...questions];
+        
+        updated[index].image =e.target.files[0];
+      
+//files is not a single file — it’s a FileList (like an array).
+// Even if the input allows only one file, it still comes as a list. hence indexing
+        setQuestions(updated);
   }
   const addQuestion = () => {
     setQuestions([
@@ -168,34 +182,53 @@ useEffect(() => {
       password: examSecurity.password,
     };
     setExamInfo(updatedExamInfo);
+    
 
-    const payload = {
-      exam: {
-        ...updatedExamInfo,
-        questions,
-      },
-    };
+    const formData = new FormData();
+    formData.append("examInfo", JSON.stringify(updatedExamInfo));
+        //FormData only stores string or file values — it can’t store JS objects directly.So we use json.stringify later on backend it will be parsed as the json.parse()
+        //Normal JSON can only handle text — no actual binary file data.
+        //FormData is designed for multipart/form-data requests, which lets you send both
+        //JSON-like fields and actual files in one go (exactly how HTML file uploads work).//HEnce we used the FormData object
+        // Append each question’s data & file
+    questions.forEach((q, i) => {
+          formData.append(`questions${i}`, JSON.stringify({
+            question: q.question,
+            type: q.type,
+            options: q.options,
+            correctAnswer: q.correctAnswer,
+            marks: q.marks,
+            negativeMarks: q.negativeMarks,
+            unattemptedMarks: q.unattemptedMarks
+          }));
 
-   
+          if (q.image) {
+            formData.append(`images${i}`, q.image); 
+          }
+        });
 
-    axiosInstance
-      .post("/professor/uploadExam", payload, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        toast.success("Exam Created");
-        navigate("/teacher-dashboard");
-        setShowModal(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        const backendError = err.response?.data?.error || "Failed to upload exam";
-        setError(backendError);
-      });
+        setSubmit(true);
+        axiosInstance
+            .post("/professor/uploadExam", formData, {
+               headers: { "Content-Type": "multipart/form-data" },
+               withCredentials: true
+              })
+            .then(()=>{
+              setSubmit(false);
+              navigate("/teacher-dashboard");
+            })
+            .catch((err)=>{
+              setSubmit(false);
+               console.log(err.response.data.error)
+                setError(err.response?.data?.error || "Something went wrong");
+            
+            });
+
   };
 
   return (
     <div className="set-exam-wrapper">
+      {submit && <><Loader/></>}
       <div className="set-exam-container">
         <h2>Create New Exam</h2>
 
@@ -277,6 +310,25 @@ useEffect(() => {
                 }
                 required
               />
+            
+           <input
+              type="file"
+              class='q-image-input'
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                  if (!allowedTypes.includes(file.type)) {
+                    toast.error("Invalid file type. Only image files are allowed.");
+                    e.target.value = ""; 
+                    return;
+                  }
+                  handleQImageChange(index, e); 
+                }
+              }}
+            />
+
 
               <div className="question-type">
                 <label>Type</label>
@@ -393,16 +445,21 @@ useEffect(() => {
                 <div>
                   <label>Correct Answer</label>
                   <input
-                    type="text"
+                    type="number" 
                     placeholder="Enter correct numerical answer"
                     value={q.correctAnswer}
-                    onChange={(e) =>
-                      handleQuestionChange(index, "correctAnswer", e.target.value)
-                    }
+                    onChange={(e) => {
+                      const value = e.target.value;
+          
+                      if (value === "" || !isNaN(value)) {
+                        handleQuestionChange(index, "correctAnswer", value);
+                      }
+                    }}
                     required
                   />
                 </div>
               )}
+
             </div>
           ))}
 
@@ -414,6 +471,8 @@ useEffect(() => {
               type="button"
               className="submit-btn"
               onClick={() => setShowModal(true)}
+              disabled={submit}
+
             >
               Submit Exam
             </button>
@@ -445,7 +504,7 @@ useEffect(() => {
               />
 
               <div className="modal-buttons">
-                <button className="small-btn" onClick={handleSubmit}>
+                <button className="small-btn" onClick={handleSubmit} disabled={submit}>
                   Confirm
                 </button>
                 <button

@@ -208,6 +208,10 @@ export const submitExam = wrapAsync(async (req, res, next) => {
       message : "You have submitted exam named " + exam.title + " at " + new Date().toLocaleString('en-IN', DATE_FORMAT_OPTIONS),
       createdAt: new Date(),
      });
+
+     await user.save({ validateBeforeSave: false });
+
+
      res.status(200).json({
        message: "Exam submitted successfully",
        exam: {
@@ -245,7 +249,7 @@ export const getReports = wrapAsync(async (req, res, next) => {
       examId: r.exam._id,
       title: r.exam.title,
       professor: r.exam.professor?.name || "Unknown",
-      date: r.attemptedAt,
+      date: r.startTime,
       score: r.score,
       totalMarks: r.exam.totalMarks,
     }));
@@ -266,14 +270,14 @@ export const getResponses = wrapAsync(async (req, res, next) => {
     match: { exam: examId },
     populate: {
       path: "exam",
-      select: "title totalMarks professor questions description",
+      select: "title totalMarks professor questions description startTime",
     }
   });
 
   if (!user) return next(new ExpressError(404, "User not found"));
   if (user.role !== "student") return next(new ExpressError(403, "Only student can get responses"));
 
-  const response = user.responses[0]; // matched response
+  const response = user.responses[0]; // matched response as it is only one
 
   if (!response) return next(new ExpressError(404, "Responses not found"));
 
@@ -282,6 +286,7 @@ export const getResponses = wrapAsync(async (req, res, next) => {
       exam: response.exam,
       answers: response.answers,
       score: response.score,
+      date: response.startTime
     }
   });
 });
@@ -289,7 +294,6 @@ export const getResponses = wrapAsync(async (req, res, next) => {
 
 export const quickReportsForStudentHome = wrapAsync(async (req, res, next) => {
   const { _id } = req.user;
-
   const user = await User.findById(_id).populate({
       path: "responses",
       populate: {
@@ -305,8 +309,11 @@ export const quickReportsForStudentHome = wrapAsync(async (req, res, next) => {
 
   const totalSubmissions = user.responses.length;
 
-  const topThreeResponses = user.responses.sort((a, b) => b.createdAt - a.createdAt).slice(0, 3);
 
+  
+  const topThreeResponses = user.responses.sort((a, b) => b.createdAt - a.createdAt).slice(0, 3);
+  console.log(topThreeResponses)
+  
   const topThreeArray = topThreeResponses.map((r) => ({
     title: r.exam?.title || "Unknown",
     score: r.score,

@@ -23,13 +23,15 @@ const StudentQuestionPaper = () => {
     }
 
 
-  const { exam, answers,score } = response;
+  const { exam, answers,score ,date} = response;
+  console.log(date)
 
   return (
     <div className="student-question-paper-container">
       <h1 className="student-question-paper-title">{exam.title}</h1>
       <p className="student-question-paper-line"><strong>Description:</strong> {exam.description}</p>
-      <p className="student-question-paper-line"><strong>Score:</strong> {score}/{exam.totalMarks}</p>
+      <p className="student-question-paper-line attempted"><strong>Attempted At:</strong> {new Date(date).toLocaleString("en-IN")}</p>
+      <p className="student-question-paper-line score"><strong>Score:</strong> {score}/{exam.totalMarks}</p>
 
       <div className="student-question-paper-list">
         {exam.questions.map((q, index) => {
@@ -45,8 +47,15 @@ const StudentQuestionPaper = () => {
             <div key={index} className="student-question-paper-box">
               <div className="student-question-paper-question">Q.{index + 1} {q.question}</div>
               <div className="student-question-paper-marks">
-                Marks: <b>{q.marks}</b> | Negative: <b>{q.negativeMarks}</b> | Unattempted: <b>{q.unattemptedMarks}</b>
+                Marks: <b>{q.marks}</b> | Negative: <b>{q.negativeMarks}</b> | Unattempted: <b>{q.unattemptedMarks}</b> 
+                {q.isDropped && <span className="dropped-q-student"> ( Dropped )</span>}
+                {q.isBonus && <span className="dropped-q-student"> ( Bonus )</span>}
               </div>
+
+              
+            {q.imageUrl &&
+            <img src={q.imageUrl} alt={`Question image`} className="student-view-question-image"/>
+            }
 
               {q.type === "MCQ" ? (
                 <div className="student-question-paper-options">

@@ -10,14 +10,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  align-items: flex-start;
 }
 .viewQpaper-title-and-downloadPdf button{
   background-color: #5ba713;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding:0.4rem 1rem;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .viewQpaper-title-and-downloadPdf button:hover{
@@ -28,6 +29,9 @@
   font-weight: bold;
   color: #509f06;
   margin-bottom: 14px;
+  word-break: break-word;    
+  white-space: normal;  
+  width:95%;
 }
 
 .exam-line {
@@ -56,6 +60,8 @@
   font-weight: 500;
   color: #1e3a8a;
   margin-bottom: 8px;
+  white-space: normal; 
+  word-break: break-word;
 }
 
 .marks-line {
@@ -80,7 +86,10 @@
   font-size: 1rem;
   color: #1e293b;
   border: 1px solid #cbd5e1;
+  word-break: break-word;    
+    white-space: normal; 
 }
+
 
 
 .option-radio.right-one {
@@ -95,4 +104,91 @@
   color: #10b953;
   font-weight: 500;
   margin-top: 8px;
+}
+
+
+.teacher-view-question-image{
+  width:300px;
+  height:auto;
+  border-radius: 10px;
+  margin: 1rem;
+  display: block;
+}
+
+.dropped-q-teacher{
+  color:green;
+  font-weight: 600;
+}
+
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px 20px;
+    margin: 15px;
+  }
+
+  .viewQpaper-title-and-downloadPdf {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .exam-title {
+    font-size: 1.4rem;
+  }
+
+  .viewQpaper-title-and-downloadPdf button {
+    width: 100%;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+
+  .exam-line {
+    font-size: 0.9rem;
+  }
+
+  .ques-text {
+    font-size: 1rem;
+   
+  }
+
+  .marks-line {
+    font-size: 0.85rem;
+  }
+
+  .option-radio {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .exam-title {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .viewQpaper-title-and-downloadPdf {
+    align-items: center;
+    margin-bottom:4rem;
+        
+  }
+
+  .viewQpaper-title-and-downloadPdf button {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+
+  .ques-box {
+    padding: 12px;
+  }
+
+  .ques-text {
+    font-size: 0.9rem;
+  }
+
+  .marks-line,
+  .option-radio,
+  .text-ans {
+    font-size: 0.8rem;
+  }
 }

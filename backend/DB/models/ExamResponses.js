@@ -30,7 +30,7 @@ const responseSchema = new Schema({
   },
 
   attemptedAt: { type: Date, default: Date.now }
-});
+}, { timestamps: true });
 
 
 const ExamResponses = mongoose.model("ExamResponses", responseSchema);

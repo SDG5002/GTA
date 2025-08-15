@@ -10,13 +10,16 @@
   font-size: 1.8rem;
   font-weight: bold;
   color: #2ea100;
-  margin-bottom: 14px;
+  margin-bottom:3rem;
+
 }
 
 .exam-line {
   font-size: 1rem;
   color: #334155;
   margin: 4px 0;
+  overflow-wrap: break-word;  
+  word-break: break-word;
 }
 
 .queslist {
@@ -44,7 +47,26 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  word-break: break-word;    
+    white-space: normal; 
 }
+.edit-controls select {
+  max-width: 300px; /* limit width */
+  white-space: normal; /* allow wrapping */
+  word-break: break-word; /* break long words */
+}
+.edit-controls select option {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.edit-controls option{
+  word-break: break-word;    
+    white-space: normal; 
+    max-width:380px;
+}
+
 
 .control-label {
   font-weight: 500;
@@ -122,3 +144,19 @@ option {
   color: black;
 }
 
+
+
+.edit-page-q-image{
+  width: 300px;
+  height:auto;
+  border-radius: 10px;
+  margin:1rem;
+
+  }
+
+  @media (max-width: 768px) {
+    .EditExam-container{
+      padding:20px;
+    }
+    
+  }

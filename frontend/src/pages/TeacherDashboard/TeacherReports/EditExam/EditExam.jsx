@@ -70,6 +70,11 @@ const EditExam = () => {
         {exam.questions.map((q, index) => (
           <div key={q._id} className="ques-box">
             <div className="ques-text">Q{index + 1}. {q.question}</div>
+            { q.imageUrl && 
+             <img src={q.imageUrl} alt="Question Image" className="edit-page-q-image" />
+
+            }
+           
             <div className="edit-controls">
               <label className="control-label">Correct Answer:</label>
               {q.type === "MCQ" ? (

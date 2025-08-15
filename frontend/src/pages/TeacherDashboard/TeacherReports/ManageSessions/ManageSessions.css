@@ -7,12 +7,26 @@
   color: #333;
 }
 
-.sessionpage-title {
+.sessionpage-title  {
   font-size: 28px;
   font-weight: bold;
   color: #509f06;
   margin-bottom: 1.5rem;
+  overflow-wrap: break-word;  
+  word-break: break-word;
 }
+
+.sessionpage-header{
+  display:flex;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #4d73de;
+  margin-bottom: 1.5rem;
+
+}
+
+
+
 
 .sessionpage-table {
   width: 100%;
@@ -172,4 +186,57 @@
 
 .sessionpage-modal-cancel:hover {
   background-color: #555;
+}
+
+.manage-session-icon {
+  font-size: 40px!important;
+}
+
+@media (max-width: 768px) {
+  .sessionpage-container {
+    padding: 1rem;
+  }
+
+  td {
+   white-space: normal; /* Allow wrapping */
+   word-break: break-word; /* Break long words like emails */
+   max-width: 200px; /* Limit width for wrapping */
+  }
+
+
+  .sessionpage-table th,
+  .sessionpage-table td {
+    font-size: 0.8rem;
+    padding: 8px;
+  }
+
+  .sessionpage-title {
+    font-size: 1.2rem;
+  }
+
+  .sessionpage-kill-btn {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+
+  .sessionpage-status-live {
+    background-color: #c8e6c9;
+    color: #256029;
+    border: none;
+    padding: 5px 6px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+}
+
+
+.sessionpage-status-submitted {
+  
+    border: none;
+    padding: 5px 6px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    background-color: #fff3cd;
+    color: #9c780b;
+
+}
 }

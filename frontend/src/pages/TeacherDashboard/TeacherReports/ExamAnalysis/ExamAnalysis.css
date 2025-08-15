@@ -12,12 +12,15 @@
   font-weight: bold;
   color: #509f06;
   margin: 0;
+    overflow-wrap: break-word;  
+  word-break: break-word;
 }
 
 .title-and-pdf-button {
   display: flex;
+  gap:10px;
   justify-content: space-between;
-  align-items: center;
+     align-items: flex-start;
   margin-bottom: 1rem;
 }
 
@@ -95,4 +98,46 @@
 
 .exam-analysis-table tbody tr:hover {
   background-color: #f1f5ff;
+}
+
+
+
+
+@media (max-width: 760px) {
+
+  .exam-analysis-container{
+    padding: 0;
+    margin:1.2rem;
+  }
+  .title-and-pdf-button{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .title-and-pdf-button {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  
+
+  .exam-analysis-title {
+    font-size: 20px;
+    text-align: center;
+
+  }
+
+  .exam-analysis-table th{
+    font-size:0.8rem;
+     padding:10px 3px;
+
+  }
+  .exam-analysis-table td{
+
+    font-size:0.7rem;
+    padding:19px 0px;
+
+  }
 }

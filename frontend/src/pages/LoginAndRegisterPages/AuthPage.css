@@ -157,3 +157,49 @@
   color: #ff4d79;
   font-weight: bold;
 }
+
+
+
+@media (max-width: 760px) {
+  .auth-card {
+    flex-direction: column;
+    width: 90%;
+    height: auto;
+  }
+
+  .auth-left,
+  .auth-right {
+    flex: none;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .auth-left p {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .auth-left h1 {
+    font-size: 2rem;
+  }
+
+  .auth-left h2 {
+    font-size: 1.4rem;
+  }
+
+ 
+
+
+  .form-group input,
+  .form-group select {
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .btn-primary,
+  .auth-right button {
+    padding: 10px;
+    font-size: 1rem;
+  }
+}

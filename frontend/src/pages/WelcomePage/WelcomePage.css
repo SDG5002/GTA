@@ -150,11 +150,52 @@
   margin-bottom: 1.875rem; 
   color: #555;
 }
+.welcome-ai-box{
+  display:flex;
+  margin-top:3rem;
+  justify-content: space-between;
+    text-align: left;
+  border-radius: 2rem;
+  padding:2rem;
+    background-color: #ffffff;
+
+}
+.welcome-ai-info{
+  font-size:1.1rem;
+}
+
+.welcome-ai-img img{
+  width:100%;
+} 
+.welcome-ai-img {
+  width:40%;
+} 
+.welcome-ai-box h1 span {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color:#ff4e9b;
 
 
+  
+}
+.welcome-ai-box h1{
+  font-size: 2.2rem;
+   margin-bottom: 2rem;
+
+
+  
+}
+ 
 @media (max-width: 768px) {
    
   .right-side{
     display:none
   }
+
+  .welcome-ai-img{
+    display:none;
+  }
 }
+
+
+

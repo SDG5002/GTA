@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import axiosInstance from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { HiSparkles } from "react-icons/hi";
+import Loader from "../Loader/Loader";
 
 const AIQuizPrompt = ({ onClose }) => {
   const [topic, setTopic] = useState("");
@@ -70,6 +71,7 @@ const AIQuizPrompt = ({ onClose }) => {
         setSubmit(false);
       })
       .catch((err) => {
+        setSubmit(false);
         
         toast.error("Error generating AI quiz. Please try again.");
       });
@@ -78,9 +80,8 @@ const AIQuizPrompt = ({ onClose }) => {
   return (
     <div className="ai-modal-overlay">
       {submit && (
-        <div className="ai-loader-container-overlay" >
-          <div className="ai-loader"></div>
-        </div>
+        <Loader/>
+       
       )}
 
       <div className="ai-card">

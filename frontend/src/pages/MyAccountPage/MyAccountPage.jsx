@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import "./MyAccountPage.css";
 import { AuthContext } from "../../context/AuthContext";
+import { FaUserCircle } from "react-icons/fa";
 
 function MyAccountPage() {
   const { user } = useContext(AuthContext);
@@ -8,7 +9,7 @@ function MyAccountPage() {
   return (
     <div className="my-account-container">
       <div className="my-account-box">
-        <h2 className="my-account-title">&#x1F464; My Account</h2>
+        <h2 className="my-account-title"><FaUserCircle />   My Account</h2>
         {user ? (
           <div className="my-account-info">
             <p><strong>Name:</strong> {user.name}</p>

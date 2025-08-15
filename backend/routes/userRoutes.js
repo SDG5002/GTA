@@ -4,6 +4,7 @@ import { verifyEmail, googleLogin,register ,login, logout,verify} from "../contr
 import authenticate from "../middlewares/authentication.js";
 
 
+
 router.route("/register")
         .post(register);
 router.route("/login")

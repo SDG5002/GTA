@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 export const emailVerMailer = async (verificationUrl, userEmail) => {
   const html_content = `
     <p>Hello,</p>
-    <p>Thank you for signing up for GTA EXAMS.</p>
+    <p>Thank you for signing up for <strong> GTA<strong/>.</p>
     <p>Please verify your email by visiting this link:</p>
     <p><a href="${verificationUrl}">${verificationUrl}</a></p>
   `;

@@ -40,7 +40,7 @@ function StudentNavbar() {
 
           <NavLink
             to="/student-dashboard/account"
-            end//end matches exact path
+            end//end matches exact path(without this path with same prev path also be active)
             className={({ isActive }) =>isActive ? "student-nav-link active" : "student-nav-link"}
             onClick={() => setMenuOpen(false)}
           >

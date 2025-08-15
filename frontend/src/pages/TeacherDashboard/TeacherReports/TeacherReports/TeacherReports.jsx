@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./TeacherReports.css";
 import axiosInstance from "../../../../api/axiosInstance";
+import Loader from "../../../../components/Loader/Loader";
 
 const TeacherReports = () => {
   const [exams, setExams] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
+  const [deleteOn,setDeleteOn]=useState(false);//it's for setting loader after user deletes the file 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,6 +21,7 @@ const TeacherReports = () => {
   }, []);
 
   const handleDelete = async () => {
+    setDeleteOn(true);
     await axiosInstance
       .delete(`/professor/deleteExam/${selectedExam}`, {
         withCredentials: true,
@@ -27,6 +30,7 @@ const TeacherReports = () => {
         setExams((prev) => prev.filter((exam) => exam.id !== selectedExam));
         setModalOpen(false);
         setSelectedExam(null);
+        setDeleteOn(false);
       })
       .catch((err) => console.log(err));
   };
@@ -93,9 +97,10 @@ const TeacherReports = () => {
                 </button>
                 <button
                   className="teacher-report-btn teacher-report-delete-btn"
+                  disabled={deleteOn}
                   onClick={() => {
                     setSelectedExam(exam.id);
-                    setModalOpen(true);
+                    setModalOpen(true);                    
                   }}
                 >
                   Delete Exam
@@ -118,7 +123,9 @@ const TeacherReports = () => {
 
       {modalOpen && (
         <div className="teacher-report-delete-exam-modal-overlay">
+         
           <div className="teacher-report-delete-exam-modal">
+             {deleteOn && <Loader/>}
             <h2>Confirm Deletion</h2>
             <p>
               <strong>This action is irreversible.</strong>
