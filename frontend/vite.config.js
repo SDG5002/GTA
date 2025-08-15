@@ -5,8 +5,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     allowedHosts: [
-     import.meta.env.VITE_ALLOWED_HOST_1,
-     import.meta.env.VITE_ALLOWED_HOST_2
+    'https://gta-exams.onrender.com',
+    'http://localhost:5173'
     ]
   }
 })
