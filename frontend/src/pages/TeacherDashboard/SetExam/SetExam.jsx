@@ -174,13 +174,22 @@ useEffect(() => {
       return;
     }
 
-    const total = questions.reduce((acc, curr) => acc + (curr.marks || 0), 0);
-    const updatedExamInfo = {
-      ...examInfo,
-      totalMarks: total,
-      code: examSecurity.code,
-      password: examSecurity.password,
-    };
+      const total = questions.reduce((acc, curr) => acc + (curr.marks || 0), 0);
+
+     // Convert scheduledAt and closeAt from local form value to UTC
+     //The issue that when i deploy it on render its server runs in diff region so it dont know the what local time means and mongo stores UTC by converting wrongly
+      const scheduledUTC = new Date(examInfo.scheduledAt).toISOString();
+      const closeUTC = new Date(examInfo.closeAt).toISOString();
+
+      const updatedExamInfo = {
+        ...examInfo,
+        scheduledAt: scheduledUTC,
+        closeAt: closeUTC,
+        totalMarks: total,
+        code: examSecurity.code,
+        password: examSecurity.password
+      };
+
     setExamInfo(updatedExamInfo);
     
 
