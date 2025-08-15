@@ -15,6 +15,7 @@ const TeacherReports = () => {
     axiosInstance
       .get("/professor/getExams", { withCredentials: true })
       .then((res) => {
+        console.log(res.data.exams);
         setExams(res.data.exams || []);
       })
       .catch(() => setExams([]));
@@ -58,12 +59,14 @@ const TeacherReports = () => {
                     year: "numeric",
                     hour: "numeric",
                     minute: "numeric",
+                    timeZone:"asia/Kolkata"
                   })} - {new Date(exam.closeAt).toLocaleDateString("en-IN", {
                     day: "numeric",
                     month: "short",
                     year: "numeric",
                     hour: "numeric",
                     minute: "numeric",
+                    timeZone:"asia/Kolkata"
                   })}
                 </span>
               </div>
