@@ -12,11 +12,9 @@ function SetExam() {
   const [examSecurity, setExamSecurity] = useState({ code: "", password: "" });
   const [error, setError] = useState("");
   const [aiData, setAiData] = useState(null);
-  const [submit,setSubmit]=useState(false);
+  const [submit, setSubmit] = useState(false);
   const navigate = useNavigate();
-
-  const location=useLocation();
-  
+  const location = useLocation();
 
   const [questions, setQuestions] = useState([
     {
@@ -27,31 +25,29 @@ function SetExam() {
       marks: 4,
       negativeMarks: -1,
       unattemptedMarks: 0,
-       image: null 
+      image: null
     },
   ]);
 
-useEffect(() => {
-  if (location.state?.questions) {
-    const formattedQuestions = location.state.questions.map((q) => ({
-      question: q.question,
-      type: q.type,
-      options: q.options,
-      correctAnswer: q.answer,
-      marks: 4,
-      negativeMarks: -1,
-      unattemptedMarks: 0,
-      image: null
-    }));
-    setQuestions(formattedQuestions);
-  }
-}, [location.state]);
-
-
+  useEffect(() => {
+    if (location.state?.questions) {
+      const formattedQuestions = location.state.questions.map((q) => ({
+        question: q.question,
+        type: q.type,
+        options: q.options,
+        correctAnswer: q.answer,
+        marks: 4,
+        negativeMarks: -1,
+        unattemptedMarks: 0,
+        image: null
+      }));
+      setQuestions(formattedQuestions);
+    }
+  }, [location.state]);
 
   const [examInfo, setExamInfo] = useState({
     title: location.state?.title || "",
-    description:location.state?.description || "",
+    description: location.state?.description || "",
     scheduledAt: "",
     closeAt: "",
     duration: "",
@@ -59,18 +55,12 @@ useEffect(() => {
     correctMarks: 4,
     incorrectMarks: -1,
     unattemptedMarks: 0,
-  }); 
+  });
 
   const handleQuestionChange = (index, field, value) => {
-     
-  
     const updated = [...questions];
-   
     updated[index][field] = value;
-    if(field==="type"){
-      updated[index].options=["", ""];
-      
-    }
+    if (field === "type") updated[index].options = ["", ""];
     setQuestions(updated);
   };
 
@@ -92,23 +82,20 @@ useEffect(() => {
     const updated = [...questions];
     updated[qIndex].options.pop();
     setQuestions(updated);
-  }
-  const handleRemoveQuestion= (index) =>{
+  };
+
+  const handleRemoveQuestion = (index) => {
     const updated = [...questions];
-    updated.splice(index,1);
+    updated.splice(index, 1);
     setQuestions(updated);
-    
-  }
+  };
 
   const handleQImageChange = (index, e) => {
-        const updated = [...questions];
-        
-        updated[index].image =e.target.files[0];
-      
-//files is not a single file — it’s a FileList (like an array).
-// Even if the input allows only one file, it still comes as a list. hence indexing
-        setQuestions(updated);
-  }
+    const updated = [...questions];
+    updated[index].image = e.target.files[0];
+    setQuestions(updated);
+  };
+
   const addQuestion = () => {
     setQuestions([
       ...questions,
@@ -124,43 +111,42 @@ useEffect(() => {
     ]);
   };
 
- const validateExamData = () => {
-  if (!examInfo.title.trim()) return "Exam title is required.";
-  if (!examInfo.description.trim()) return "Exam description is required.";
-  if (!examInfo.scheduledAt.trim()) return "Scheduled start time is required.";
-  if (!examInfo.closeAt.trim()) return "Close time is required.";
-  if (!examInfo.duration) return "Duration is required.";
-  if (!examSecurity.code.trim()) return "Exam code is required.";
-  if (!examSecurity.password.trim()) return "Password is required.";
+  const validateExamData = () => {
+    if (!examInfo.title.trim()) return "Exam title is required.";
+    if (!examInfo.description.trim()) return "Exam description is required.";
+    if (!examInfo.scheduledAt.trim()) return "Scheduled start time is required.";
+    if (!examInfo.closeAt.trim()) return "Close time is required.";
+    if (!examInfo.duration) return "Duration is required.";
+    if (!examSecurity.code.trim()) return "Exam code is required.";
+    if (!examSecurity.password.trim()) return "Password is required.";
 
-  const scheduled = new Date(examInfo.scheduledAt);
-  const close = new Date(examInfo.closeAt);
+    const scheduled = new Date(examInfo.scheduledAt + "Z"); // treat as UTC
+    const close = new Date(examInfo.closeAt + "Z"); // treat as UTC
+    const duration = parseFloat(examInfo.duration);
 
-  if (scheduled >= close) return "Close time must be after scheduled time";
-  if (scheduled <= new Date()) return "Scheduled time must be in the future";
+    if (scheduled >= close) return "Close time must be after scheduled time";
+    if (scheduled <= new Date()) return "Scheduled time must be in the future";
 
-  const diffInMinutes = Math.floor((close - scheduled) / (1000 * 60));
-  if (examInfo.duration > diffInMinutes)
-    return "Duration exceeds the time between Scheduled At and Close At";
+    const diffInMinutes = (close.getTime() - scheduled.getTime()) / (1000 * 60);
+    if (duration > diffInMinutes)
+      return "Duration exceeds the time between Scheduled At and Close At";
 
-  for (let i = 0; i < questions.length; i++) {
-    const q = questions[i];
-    if (!String(q.question || "").trim()) return `Question ${i + 1} is required.`;
+    for (let i = 0; i < questions.length; i++) {
+      const q = questions[i];
+      if (!String(q.question || "").trim()) return `Question ${i + 1} is required.`;
 
-    if (q.type === "MCQ") {
-      if (q.options.some((opt) => !String(opt || "").trim()))
-        return `All options must be filled for Question ${i + 1}.`;
-
-      if (!String(q.correctAnswer || "").trim())
-        return `Correct answer is required for Question ${i + 1}.`;
-    } else if (q.type === "NAT") {
-      if (!String(q.correctAnswer || "").trim())
-        return `Correct numerical answer is required for Question ${i + 1}.`;
+      if (q.type === "MCQ") {
+        if (q.options.some((opt) => !String(opt || "").trim()))
+          return `All options must be filled for Question ${i + 1}.`;
+        if (!String(q.correctAnswer || "").trim())
+          return `Correct answer is required for Question ${i + 1}.`;
+      } else if (q.type === "NAT") {
+        if (!String(q.correctAnswer || "").trim())
+          return `Correct numerical answer is required for Question ${i + 1}.`;
+      }
     }
-  }
-
-  return null;
-};
+    return null;
+  };
 
   const handleSubmit = () => {
     const validationError = validateExamData();
@@ -168,8 +154,7 @@ useEffect(() => {
       setError(validationError);
       return;
     }
-
-    if(!questions.length){
+    if (!questions.length) {
       setError("Atleast One question required");
       return;
     }
@@ -182,53 +167,46 @@ useEffect(() => {
       password: examSecurity.password,
     };
     setExamInfo(updatedExamInfo);
-    
 
     const formData = new FormData();
     formData.append("examInfo", JSON.stringify(updatedExamInfo));
-        //FormData only stores string or file values — it can’t store JS objects directly.So we use json.stringify later on backend it will be parsed as the json.parse()
-        //Normal JSON can only handle text — no actual binary file data.
-        //FormData is designed for multipart/form-data requests, which lets you send both
-        //JSON-like fields and actual files in one go (exactly how HTML file uploads work).//HEnce we used the FormData object
-        // Append each question’s data & file
+
     questions.forEach((q, i) => {
-          formData.append(`questions${i}`, JSON.stringify({
-            question: q.question,
-            type: q.type,
-            options: q.options,
-            correctAnswer: q.correctAnswer,
-            marks: q.marks,
-            negativeMarks: q.negativeMarks,
-            unattemptedMarks: q.unattemptedMarks
-          }));
+      formData.append(
+        `questions${i}`,
+        JSON.stringify({
+          question: q.question,
+          type: q.type,
+          options: q.options,
+          correctAnswer: q.correctAnswer,
+          marks: q.marks,
+          negativeMarks: q.negativeMarks,
+          unattemptedMarks: q.unattemptedMarks,
+        })
+      );
+      if (q.image) formData.append(`images${i}`, q.image);
+    });
 
-          if (q.image) {
-            formData.append(`images${i}`, q.image); 
-          }
-        });
-
-        setSubmit(true);
-        axiosInstance
-            .post("/professor/uploadExam", formData, {
-               headers: { "Content-Type": "multipart/form-data" },
-               withCredentials: true
-              })
-            .then(()=>{
-              setSubmit(false);
-              navigate("/teacher-dashboard");
-            })
-            .catch((err)=>{
-              setSubmit(false);
-               console.log(err.response.data.error)
-                setError(err.response?.data?.error || "Something went wrong");
-            
-            });
-
+    setSubmit(true);
+    axiosInstance
+      .post("/professor/uploadExam", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      })
+      .then(() => {
+        setSubmit(false);
+        navigate("/teacher-dashboard");
+      })
+      .catch((err) => {
+        setSubmit(false);
+        setError(err.response?.data?.error || "Something went wrong");
+        console.log(err.response?.data?.error);
+      });
   };
 
   return (
     <div className="set-exam-wrapper">
-      {submit && <><Loader/></>}
+      {submit && <Loader />}
       <div className="set-exam-container">
         <h2>Create New Exam</h2>
 
@@ -238,9 +216,7 @@ useEffect(() => {
             type="text"
             placeholder="Exam Title"
             value={examInfo.title}
-            onChange={(e) =>
-              setExamInfo({ ...examInfo, title: e.target.value })
-            }
+            onChange={(e) => setExamInfo({ ...examInfo, title: e.target.value })}
             required
           />
 
@@ -248,13 +224,12 @@ useEffect(() => {
           <textarea
             placeholder="Description"
             value={examInfo.description}
-            onChange={(e) =>
-              setExamInfo({ ...examInfo, description: e.target.value })
-            }
+            onChange={(e) => setExamInfo({ ...examInfo, description: e.target.value })}
             required
           />
-         <div className="time-info">
-           <div className="time-info-box">
+
+          <div className="time-info">
+            <div className="time-info-box">
               <label>Scheduled At</label>
               <input
                 type="datetime-local"
@@ -263,80 +238,81 @@ useEffect(() => {
                   setExamInfo({ ...examInfo, scheduledAt: e.target.value })
                 }
               />
+            </div>
+
+            <div className="time-info-box">
+              <label>Close At</label>
+              <input
+                type="datetime-local"
+                value={examInfo.closeAt}
+                onChange={(e) => setExamInfo({ ...examInfo, closeAt: e.target.value })}
+              />
+            </div>
+
+            <div className="time-info-box">
+              <label>Duration (in minutes)</label>
+              <input
+                type="number"
+                min="1"
+                value={examInfo.duration}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value > 0 || e.target.value === "") {
+                    setExamInfo({ ...examInfo, duration: value });
+                  }
+                }}
+              />
+            </div>
           </div>
 
-          <div className="time-info-box">
-
-            <label>Close At</label>
-            <input
-              type="datetime-local"
-              value={examInfo.closeAt}
-              onChange={(e) =>
-                setExamInfo({ ...examInfo, closeAt: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="time-info-box">
-
-            <label>Duration (in minutes)</label>
-            <input
-              type="number"
-              min="1"
-              value={examInfo.duration}
-              onChange={(e) => {
-                const value = Number(e.target.value);
-                if (value > 0 || e.target.value === "") {
-                  setExamInfo({ ...examInfo, duration: value });
-                }
-              }}
-            />
-          </div>
-
-          </div>
-
-          <h3 >Questions</h3>
+          <h3>Questions</h3>
           {questions.map((q, index) => (
             <div key={index} className="question-block">
-             <div className="question-no-and-delete">
-              <label>Question {index + 1}</label>
-              {questions.length > 1 && <RxCross2 className="remove-question" onClick={() => handleRemoveQuestion(index)} />}
-             </div>
+              <div className="question-no-and-delete">
+                <label>Question {index + 1}</label>
+                {questions.length > 1 && (
+                  <RxCross2
+                    className="remove-question"
+                    onClick={() => handleRemoveQuestion(index)}
+                  />
+                )}
+              </div>
+
               <textarea
                 placeholder="Enter your question"
                 value={q.question}
-                onChange={(e) =>
-                  handleQuestionChange(index, "question", e.target.value)
-                }
+                onChange={(e) => handleQuestionChange(index, "question", e.target.value)}
                 required
               />
-            
-           <input
-              type="file"
-              class='q-image-input'
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (file) {
-                  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                  if (!allowedTypes.includes(file.type)) {
-                    toast.error("Invalid file type. Only image files are allowed.");
-                    e.target.value = ""; 
-                    return;
-                  }
-                  handleQImageChange(index, e); 
-                }
-              }}
-            />
 
+              <input
+                type="file"
+                className="q-image-input"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    const allowedTypes = [
+                      "image/jpeg",
+                      "image/png",
+                      "image/gif",
+                      "image/webp",
+                    ];
+                    if (!allowedTypes.includes(file.type)) {
+                      toast.error("Invalid file type. Only image files are allowed.");
+                      e.target.value = "";
+                      return;
+                    }
+                    handleQImageChange(index, e);
+                  }
+                }}
+              />
 
               <div className="question-type">
                 <label>Type</label>
                 <select
                   value={q.type}
-                  onChange={(e) =>
-                    handleQuestionChange(index, "type", e.target.value)
-                  }
+                  onChange={(e) => handleQuestionChange(index, "type", e.target.value)}
                 >
                   <option value="MCQ">MCQ</option>
                   <option value="NAT">Numerical</option>
@@ -388,37 +364,33 @@ useEffect(() => {
                         type="text"
                         placeholder={`Option ${i + 1}`}
                         value={opt}
-                        onChange={(e) =>
-                          handleOptionChange(index, i, e.target.value)
-                        }
+                        onChange={(e) => handleOptionChange(index, i, e.target.value)}
                         required
                       />
                     </div>
                   ))}
-                 <div className="options-add-remove-btn">
-                
-                  <div className="remove-option-and-add-option">
-                    <button
-                      type="button"
-                      className="small-btn"
-                      onClick={() => addOption(index)}
-                      disabled={q.options.length >= 5}
-                    >
-                      + Add Option
-                    </button>
 
-                    <button
-                      type="button"
-                      className="small-btn"
-                      onClick={() => removeOption(index)}
-                      disabled={q.options.length <= 2}
-                    >
-                      - Remove Option
-                    </button>
+                  <div className="options-add-remove-btn">
+                    <div className="remove-option-and-add-option">
+                      <button
+                        type="button"
+                        className="small-btn"
+                        onClick={() => addOption(index)}
+                        disabled={q.options.length >= 5}
+                      >
+                        + Add Option
+                      </button>
+
+                      <button
+                        type="button"
+                        className="small-btn"
+                        onClick={() => removeOption(index)}
+                        disabled={q.options.length <= 2}
+                      >
+                        - Remove Option
+                      </button>
+                    </div>
                   </div>
-               
-              </div>
-
 
                   <div className="correct-ans-label">
                     <label>Correct Answer</label>
@@ -445,12 +417,11 @@ useEffect(() => {
                 <div>
                   <label>Correct Answer</label>
                   <input
-                    type="number" 
+                    type="number"
                     placeholder="Enter correct numerical answer"
                     value={q.correctAnswer}
                     onChange={(e) => {
                       const value = e.target.value;
-          
                       if (value === "" || !isNaN(value)) {
                         handleQuestionChange(index, "correctAnswer", value);
                       }
@@ -459,7 +430,6 @@ useEffect(() => {
                   />
                 </div>
               )}
-
             </div>
           ))}
 
@@ -472,7 +442,6 @@ useEffect(() => {
               className="submit-btn"
               onClick={() => setShowModal(true)}
               disabled={submit}
-
             >
               Submit Exam
             </button>
