@@ -51,11 +51,10 @@ export const uploadExam = wrapAsync(async (req, res, next) => {
     }
   }
 
- 
-  const toUTC = (localDateTime) => new Date(localDateTime).toISOString();
+ examInfo.scheduledAt = new Date(examInfo.scheduledAt).toISOString();
+ examInfo.closeAt = new Date(examInfo.closeAt).toISOString();
 
-  examInfo.scheduledAt = toUTC(examInfo.scheduledAt);
-  examInfo.closeAt = toUTC(examInfo.closeAt);
+
 
   console.log(examInfo)
 

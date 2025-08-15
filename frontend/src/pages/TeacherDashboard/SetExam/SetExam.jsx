@@ -162,72 +162,82 @@ useEffect(() => {
   return null;
 };
 
-  const handleSubmit = () => {
-   
-    const validationError = validateExamData();
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
+ const handleSubmit = () => {
+  const validationError = validateExamData();
+  if (validationError) {
+    setError(validationError);
+    return;
+  }
 
-    if(!questions.length){
-      setError("Atleast One question required");
-      return;
-    }
+  if(!questions.length){
+    setError("Atleast One question required");
+    return;
+  }
 
-    const total = questions.reduce((acc, curr) => acc + (curr.marks || 0), 0);
-    const updatedExamInfo = {
-      ...examInfo,
-      totalMarks: total,
-      code: examSecurity.code,
-      password: examSecurity.password,
-    };
-    setExamInfo(updatedExamInfo);
-    
+  const total = questions.reduce((acc, curr) => acc + (curr.marks || 0), 0);
 
-    const formData = new FormData();
-    formData.append("examInfo", JSON.stringify(updatedExamInfo));
-        //FormData only stores string or file values — it can’t store JS objects directly.So we use json.stringify later on backend it will be parsed as the json.parse()
-        //Normal JSON can only handle text — no actual binary file data.
-        //FormData is designed for multipart/form-data requests, which lets you send both
-        //JSON-like fields and actual files in one go (exactly how HTML file uploads work).//HEnce we used the FormData object
-        // Append each question’s data & file
-    questions.forEach((q, i) => {
-          formData.append(`questions${i}`, JSON.stringify({
-            question: q.question,
-            type: q.type,
-            options: q.options,
-            correctAnswer: q.correctAnswer,
-            marks: q.marks,
-            negativeMarks: q.negativeMarks,
-            unattemptedMarks: q.unattemptedMarks
-          }));
+  // Minimal change: convert local datetime to IST ISO string
+  const toISTISOString = (dateTimeStr) => {
+    if (!dateTimeStr) return "";
+    const [date, time] = dateTimeStr.split("T");
+    const [year, month, day] = date.split("-").map(Number);
+    const [hour, minute] = time.split(":").map(Number);
+    const d = new Date();
+    d.setFullYear(year, month - 1, day);
+    d.setHours(hour, minute, 0, 0);
 
-          if (q.image) {
-            formData.append(`images${i}`, q.image); 
-          }
-        });
-
-         console.log(formData);
-
-        setSubmit(true);
-        axiosInstance
-            .post("/professor/uploadExam", formData, {
-               headers: { "Content-Type": "multipart/form-data" },
-               withCredentials: true
-              })
-            .then(()=>{
-              setSubmit(false);
-              navigate("/teacher-dashboard");
-            })
-            .catch((err)=>{
-              setSubmit(false);
-               console.log(err.response.data.error)
-                setError(err.response?.data?.error || "Something went wrong");
-            
-            });
-
+    const istOffset = 5.5 * 60; // IST offset in minutes
+    const utc = d.getTime() + d.getTimezoneOffset() * 60000;
+    const istTime = new Date(utc + istOffset * 60000);
+    return istTime.toISOString().slice(0, 19); // remove milliseconds & Z
   };
+  console.log(examInfo)
+  const updatedExamInfo = {
+    ...examInfo,
+    totalMarks: total,
+    code: examSecurity.code,
+    password: examSecurity.password,
+    scheduledAt: (examInfo.scheduledAt),
+    closeAt: (examInfo.closeAt),
+  };
+  setExamInfo(updatedExamInfo);
+  console.log(examInfo)
+
+  const formData = new FormData();
+  formData.append("examInfo", JSON.stringify(updatedExamInfo));
+
+  questions.forEach((q, i) => {
+    formData.append(`questions${i}`, JSON.stringify({
+      question: q.question,
+      type: q.type,
+      options: q.options,
+      correctAnswer: q.correctAnswer,
+      marks: q.marks,
+      negativeMarks: q.negativeMarks,
+      unattemptedMarks: q.unattemptedMarks
+    }));
+
+    if (q.image) {
+      formData.append(`images${i}`, q.image); 
+    }
+  });
+
+  setSubmit(true);
+  axiosInstance
+    .post("/professor/uploadExam", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      withCredentials: true
+    })
+    .then(() => {
+      setSubmit(false);
+      navigate("/teacher-dashboard");
+    })
+    .catch((err) => {
+      setSubmit(false);
+      setError(err.response?.data?.error || "Something went wrong");
+    });
+};
+
 
   return (
     <div className="set-exam-wrapper">

@@ -53,20 +53,18 @@ const TeacherReports = () => {
                   <p className="teacher-report-exam-desc">{exam.description}</p>
                 </div>
                 <span className="teacher-report-exam-date">
-                  {new Date(exam.scheduledAt).toLocaleString("en-IN", {
+                  {new Date(exam.scheduledAt).toLocaleDateString("en-IN", {
                     day: "numeric",
                     month: "short",
                     year: "numeric",
                     hour: "numeric",
                     minute: "numeric",
-               
-                  })} - {new Date(exam.closeAt).toLocaleString("en-IN", {
+                  })} - {new Date(exam.closeAt).toLocaleDateString("en-IN", {
                     day: "numeric",
                     month: "short",
                     year: "numeric",
                     hour: "numeric",
                     minute: "numeric",
-                  
                   })}
                 </span>
               </div>
