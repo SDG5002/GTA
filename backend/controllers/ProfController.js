@@ -59,7 +59,7 @@ export const uploadExam = wrapAsync(async (req, res, next) => {
       const uploadResult = await uploadOnCloudinary(file.path);
 
       const index = parseInt(file.fieldname.replace("images", ""));
-      console.log(index);
+   
       if (questions[index]) {
         questions[index].imageUrl = uploadResult.secure_url;
         questions[index].imagePublicId = uploadResult.public_id;
@@ -254,7 +254,7 @@ export const getStats = wrapAsync(async (req, res, next) => {
 export const deleteExam = wrapAsync(async (req, res, next) => {
   const { examId } = req.params;
   if (!examId) return next(new ExpressError(400, "Exam ID is missing"));
-  console.log(req.params)
+
 
   const { _id } = req.user;
 
@@ -287,7 +287,6 @@ export const deleteExam = wrapAsync(async (req, res, next) => {
     }
   );
 
-  console.log(exam)
 
   //cloudinary delete
   for (let i = 0; i < exam.questions.length; i++) {
@@ -468,7 +467,7 @@ export const aiGeneratedQuiz = wrapAsync(async (req, res, next) => {
     return next(new ExpressError(400, "No data provided For Quiz Generation"));
   }
   
-  console.log(data)
+
   let difficulty="";
   if(data.difficulty==='1'){
     difficulty="easy";
@@ -485,10 +484,10 @@ export const aiGeneratedQuiz = wrapAsync(async (req, res, next) => {
        difficulty:difficulty,
        optionsCount:data.optionsCount<2||data.optionsCount>5?4:data.optionsCount
   }
-  console.log(ediData);
+
 
   const genQuiz = await gemini(ediData);
-  console.log(genQuiz);
+
 
  
 res.status(200).json(genQuiz);

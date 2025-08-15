@@ -17,8 +17,7 @@ const GoogleLoginButton = () => {
     const { name, email } = decoded;
 
     try {
-      const res = await axiosInstance.post('/user/googleLogin', { name, email });
-     
+      const res = await axiosInstance.post('/user/googleLogin', { name, email })
 
       setUser(res.data.user);
 

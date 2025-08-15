@@ -312,7 +312,7 @@ export const quickReportsForStudentHome = wrapAsync(async (req, res, next) => {
 
   
   const topThreeResponses = user.responses.sort((a, b) => b.createdAt - a.createdAt).slice(0, 3);
-  console.log(topThreeResponses)
+ 
   
   const topThreeArray = topThreeResponses.map((r) => ({
     title: r.exam?.title || "Unknown",

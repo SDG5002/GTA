@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Calendar from "../../../components/Calender";
+import Calendar from "../../../components/Calender/Calender";
 import 'react-calendar/dist/Calendar.css';
 import "./StudentHome.css";
 import { useContext } from "react";

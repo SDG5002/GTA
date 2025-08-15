@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./StudentReports.css";
-import axiosInstance from "../../../api/axiosInstance";
+import axiosInstance from "../../../../api/axiosInstance";
 
 const StudentReports = () => {
   const [exams, setExams] = useState([]);

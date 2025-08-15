@@ -14,12 +14,12 @@ import StudentLayout from './pages/StudentDashboard/StudentLayout.jsx';
 import ExamPage from './pages/StudentDashboard/ExamPage/ExamPage.jsx';
 
 
-import ThankYouPage from './pages/StudentDashboard/ThankYouPage.jsx';
+import ThankYouPage from './pages/StudentDashboard/ThankYouPage/ThankYouPage.jsx';
 import TeacherReports from './pages/TeacherDashboard/TeacherReports/TeacherReports/TeacherReports.jsx';
 import ViewQuestionPaper from './pages/TeacherDashboard/TeacherReports/ViewQuestionPaper/ViewQuestionPaper.jsx';
 import ExamAnalysis from './pages/TeacherDashboard/TeacherReports/ExamAnalysis/ExamAnalysis.jsx';
 import MyAccountPage from './pages/MyAccountPage/MyAccountPage.jsx';
-import StudentReports from './pages/StudentDashboard/StudentReports/StudentReports.jsx';
+import StudentReports from './pages/StudentDashboard/StudentReports/StudentReportsLanding/StudentReports.jsx';
 import StudentQuestionPaper from './pages/StudentDashboard/StudentReports/StudentQuestionPaper/StudentQuestionPaper.jsx';
 import EditExam from './pages/TeacherDashboard/TeacherReports/EditExam/EditExam.jsx';
 import ManageSessions from './pages/TeacherDashboard/TeacherReports/ManageSessions/manageSessions.jsx';

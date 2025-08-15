@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const baseURL = "http://localhost:3002/";
+const baseURL = import.meta.env.VITE_BACKEND_URL;
 
 const axiosInstance = axios.create({
   baseURL,
