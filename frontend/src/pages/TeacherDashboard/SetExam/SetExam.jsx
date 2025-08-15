@@ -322,7 +322,7 @@ useEffect(() => {
             
            <input
               type="file"
-              class='q-image-input'
+              className='q-image-input'
               accept="image/*"
               onChange={(e) => {
                 const file = e.target.files[0];

@@ -15,7 +15,6 @@ const TeacherReports = () => {
     axiosInstance
       .get("/professor/getExams", { withCredentials: true })
       .then((res) => {
-        console.log("HIII",res.data.exams);
         setExams(res.data.exams || []);
       })
       .catch(() => setExams([]));
