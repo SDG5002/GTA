@@ -33,6 +33,7 @@ export const uploadExam = wrapAsync(async (req, res, next) => {
     
   //as our forma data is mixed with files and text it cant be directly parsed by the outer middleware in app.js
   const examInfo = JSON.parse(req.body.examInfo);
+  console.log(examInfo);
 
   const code=examInfo.code;
 
