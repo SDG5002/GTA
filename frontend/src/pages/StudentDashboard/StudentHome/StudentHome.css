@@ -292,6 +292,11 @@ table {
   padding: 1.5rem 1rem;
   border-bottom: 1px solid #eee;
 }
+
+.marks-table td {
+  padding: 1.5rem 0rem;
+  border-bottom: 1px solid #eee;
+}
 .card-student.total-submissions-student{
   width:30%;
    padding:0.3rem;
