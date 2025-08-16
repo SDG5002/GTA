@@ -42,12 +42,14 @@ const authenticate = async (req, res, next) => {
     
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
-      secure: isProduction,
+      secure: isProduction, httpOnly: true,
+      sameSite: isProduction ? "None" : "Lax",
     });
 
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
       secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",sameSite: isProduction ? "None" : "Lax",
     });
 
     
