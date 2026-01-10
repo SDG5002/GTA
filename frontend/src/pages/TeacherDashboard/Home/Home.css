@@ -1,150 +1,308 @@
+.top-section{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
 .dashboard-wrapper {
   display: flex;
+  margin: 5rem;
   flex-direction: column;
   gap: 2rem;
-  margin: 2rem 5rem;
 }
 
-/* TOP */
-.top-section {
-  display: flex;
-  justify-content: space-between;
-  gap: 1.5rem;
-}
 
-.welcome-box,
-.create-exam-box,
-.activity-box,
-.stats-box {
-  background: white;
-  border-radius: 20px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-}
 
-/* WELCOME */
 .welcome-box {
-  flex: 0 0 39%;
+  background-color: white;
+  padding: 1.8rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.066);
+
+ 
+  flex: 0 0 39%; 
   display: flex;
+  justify-content: center;
   align-items: center;
 }
 
 .professor-header {
+  
   display: flex;
-  gap: 1rem;
   align-items: center;
+  gap: 1rem;
 }
 
 .professor-avatar {
   font-size: 3rem;
   background: #f0f0ff;
-  padding: 0.6rem;
   border-radius: 50%;
+  padding: 0.6rem;
 }
 
-/* CREATE */
+.professor-details h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.professor-details p {
+  margin: 4px 0;
+  font-size: 1rem;
+  color: #555;
+}
+
 .create-exam-box {
-  flex: 0 0 58%;
-  text-align: center;
+  
+  background-color: rgb(255, 255, 255);
+  padding: 1.8rem;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.066);
+  flex: 0 0 58%; 
+  width: 70%;
+
+}
+
+.exam-gen-buttons{
+  display: flex;
+ 
+  gap: 1rem;
 }
 
 .create-exam-box h1 {
+  font-weight: 600;
   font-size: 2.5rem;
   background: linear-gradient(90deg, #f42787, #a94bfd);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  margin: 1rem 0;
 }
-
 .create-exam-box p {
-  color: #999;
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: #b3b0b0;
+  text-align: center;
 }
 
-.exam-gen-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.exam-gen-buttons button {
-  border: 1px solid #4c40f7;
-  background: white;
+.create-exam-box button {
   color: #4c40f7;
-  padding: 10px 18px;
-  border-radius: 30px;
+  border: 1px solid #4c40f7;
+  background-color: white;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 5rem;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
-/* ACTIVITY */
+.create-exam-box button:hover {
+  background-color: #f3f2f7;
+}
+
+.activity-box {
+   background-color: rgb(255, 255, 255);
+  padding: 1.5rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.066);
+}
+
+.activity-box h3 {
+  font-size: 1.3rem;
+  margin-bottom: 2rem;
+}
+
 .activity-box ul {
+  list-style: disc;
   padding-left: 1.5rem;
+  color: #333;
 }
 
 .activity-box li {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-/* STATS */
+
+
+.stats-section {
+  width: 100%;
+}
+
+.stats-box {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.066);
+}
+
+.stats-box h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1.2rem;
+  color: #333;
+}
+
 .stats-cards {
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
 }
 
-/* 🔥 IMPORTANT FIX HERE */
 .stat-card {
   flex: 1;
-  min-width: 220px;
-  height: 220px;              /* SAME HEIGHT */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;    /* VERTICAL CENTER */
-  align-items: center;
+  min-width: 200px;
   background: linear-gradient(to bottom right, #e0e7ff, #f5f7ff);
   border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.066);
   text-align: center;
-  transition: transform 0.3s;
+  transition: transform 0.3s ease;
 }
 
 .stat-card:hover {
   transform: translateY(-4px);
 }
 
+.stat-card.teacher-card-no h4 {
+  font-size: 3.5rem;
+  margin-bottom: 0.5rem;
+  color: #4c40f7;
+}
+
+.stat-card.teacher-card-text {
+  overflow-wrap: break-word; 
+  white-space: normal; 
+  font-size: 1.5rem;
+  margin-bottom: 0.2rem;
+  margin-top: 1rem;
+  color: #4c40f7;
+}  
+.stat-card.teacher-card-text h4 {
+  font-size: 1.5rem;
+  margin-bottom: 0.2rem;
+  margin-top: 1rem;
+  color: #4c40f7;
+}
+
 .stat-card p {
   font-size: 1.2rem;
   color: #444;
-  margin-bottom: 0.5rem;
 }
 
-.stat-card h4 {
-  font-size: 3.2rem;
-  color: #4c40f7;
-  margin: 0;
+.dashboard-wrapper{
+  margin-top: 2rem;
 }
 
-/* Latest exam text */
-.latest-text {
-  font-size: 1.5rem;
-  padding: 0 1rem;
-  word-break: break-word;
+.stat-card .latest-exam-quick-stats{
+  color:#372fc2
 }
 
-/* MOBILE */
+
 @media (max-width: 768px) {
   .dashboard-wrapper {
-    margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0.5rem;
+  }
+
+  .professor-header{
+    width:100%;
   }
 
   .top-section {
+    display: flex;
     flex-direction: column;
+    align-items: center;
+    gap:1rem;
+    
+    padding:0;
+  }
+
+  .welcome-box {
+    padding: 0;
+    border-radius: 15px;
+    overflow-wrap: break-word; 
+    word-break: break-word;    
+    white-space: normal;      
+    width: 100%;
+  
+    min-height: 200px;
+  }
+
+  .create-exam-box{
+    width: 100%;
+    padding: 0.5rem;
+     border: solid 1px rgb(93, 0, 73);
+  }
+  .create-exam-box button {
+    width: 100%;
+  }
+
+  .activity-box {
+    padding: 0.5rem;
+    border-radius: 15px;
+  }
+
+  .activity-box li{
+    color:#787878
+  }
+  .stats-box{
+    padding:0.5rem;
   }
 
   .stats-cards {
     flex-direction: column;
-    align-items: center;
+    gap: 1rem;
+ 
+  }
+  .activity-box{
+    max-width: 400px;
+
   }
 
   .stat-card {
-    width: 100%;
-    max-width: 400px;
+    padding: 1.2rem;
+    border-radius: 15px;
+       max-width: 400px;
+       
+  }
+
+  .professor-avatar {
+    font-size: 2.5rem;
+    padding: 0.4rem;
+  }
+
+  .professor-details h2 {
+    font-size: 1.4rem;
+  }
+
+  .professor-details p {
+    font-size: 0.95rem;
+  }
+
+.stat-card teacher-card-no{
+  padding:0;
+}
+  .activity-box h3,
+  .stats-box h3 {
+    font-size: 1.1rem;
+  }
+
+  .stat-card h4 {
+    font-size: 1.6rem;
+  }
+  .activity-box li{
+     word-break: break-word;    
+    white-space: normal;  
+  }
+
+  .stat-card p {
+    font-size: 0.95rem;
+  }
+
+  .stat-card .latest-exam-quick-stats {
+    font-size: 0.95rem;
   }
 }
