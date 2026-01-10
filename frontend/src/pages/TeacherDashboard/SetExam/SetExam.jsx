@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./SetExam.css";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../api/axiosInstance";
@@ -17,6 +17,14 @@ function SetExam() {
 
   const location=useLocation();
   
+
+  const questionRefs = useRef([]);
+
+  const autoResize = (textarea) => {
+    if (!textarea) return;
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+  };
 
   const [questions, setQuestions] = useState([
     {
@@ -47,6 +55,17 @@ useEffect(() => {
   }
 }, [location.state]);
 
+
+
+  // 🔥 AUTO-RESIZE WHEN AI / PREFILLED QUESTIONS LOAD
+  useEffect(() => {
+    questionRefs.current.forEach((textarea) => {
+      if (textarea) {
+        textarea.style.height = "auto";
+        textarea.style.height = textarea.scrollHeight + "px";
+      }
+    });
+  }, [questions]);
 
 
   const [examInfo, setExamInfo] = useState({
@@ -105,7 +124,7 @@ useEffect(() => {
         
         updated[index].image =e.target.files[0];
       
-//files is not a single file — it’s a FileList (like an array).
+//files is not a single file — it's a FileList (like an array).
 // Even if the input allows only one file, it still comes as a list. hence indexing
         setQuestions(updated);
   }
@@ -195,11 +214,11 @@ useEffect(() => {
 
     const formData = new FormData();
     formData.append("examInfo", JSON.stringify(updatedExamInfo));
-        //FormData only stores string or file values — it can’t store JS objects directly.So we use json.stringify later on backend it will be parsed as the json.parse()
+        //FormData only stores string or file values — it can't store JS objects directly.So we use json.stringify later on backend it will be parsed as the json.parse()
         //Normal JSON can only handle text — no actual binary file data.
         //FormData is designed for multipart/form-data requests, which lets you send both
         //JSON-like fields and actual files in one go (exactly how HTML file uploads work).//HEnce we used the FormData object
-        // Append each question’s data & file
+        // Append each question's data & file
     questions.forEach((q, i) => {
           formData.append(`questions${i}`, JSON.stringify({
             question: q.question,
@@ -239,12 +258,13 @@ useEffect(() => {
     <div className="set-exam-wrapper">
       {submit && <><Loader/></>}
       <div className="set-exam-container">
-        <h2>Create New Exam</h2>
-
-        <form className="exam-form">
-          <label>Exam Title</label>
+        
+        {/* Header Card */}
+        <div className="form-header-card">
+          <div className="form-header-accent"></div>
           <input
             type="text"
+            className="form-title-input"
             placeholder="Exam Title"
             value={examInfo.title}
             onChange={(e) =>
@@ -252,18 +272,21 @@ useEffect(() => {
             }
             required
           />
-
-          <label>Description</label>
           <textarea
-            placeholder="Description"
+            className="form-description-input"
+            placeholder="Exam description"
             value={examInfo.description}
             onChange={(e) =>
               setExamInfo({ ...examInfo, description: e.target.value })
             }
             required
           />
-         <div className="time-info">
-           <div className="time-info-box">
+        </div>
+
+        {/* Exam Settings Card */}
+        <div className="form-card">
+          <div className="time-info-grid">
+            <div className="time-info-item">
               <label>Scheduled At</label>
               <input
                 type="datetime-local"
@@ -272,57 +295,95 @@ useEffect(() => {
                   setExamInfo({ ...examInfo, scheduledAt: e.target.value })
                 }
               />
-          </div>
+            </div>
 
-          <div className="time-info-box">
-
-            <label>Close At</label>
-            <input
-              type="datetime-local"
-              value={examInfo.closeAt}
-              onChange={(e) =>
-                setExamInfo({ ...examInfo, closeAt: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="time-info-box">
-
-            <label>Duration (in minutes)</label>
-            <input
-              type="number"
-              min="1"
-              value={examInfo.duration}
-              onChange={(e) => {
-                const value = Number(e.target.value);
-                if (value > 0 || e.target.value === "") {
-                  setExamInfo({ ...examInfo, duration: value });
-                }
-              }}
-            />
-          </div>
-
-          </div>
-
-          <h3 >Questions</h3>
-          {questions.map((q, index) => (
-            <div key={index} className="question-block">
-             <div className="question-no-and-delete">
-              <label>Question {index + 1}</label>
-              {questions.length > 1 && <RxCross2 className="remove-question" onClick={() => handleRemoveQuestion(index)} />}
-             </div>
-              <textarea
-                placeholder="Enter your question"
-                value={q.question}
+            <div className="time-info-item">
+              <label>Close At</label>
+              <input
+                type="datetime-local"
+                value={examInfo.closeAt}
                 onChange={(e) =>
-                  handleQuestionChange(index, "question", e.target.value)
+                  setExamInfo({ ...examInfo, closeAt: e.target.value })
                 }
-                required
               />
-            
-           <input
+            </div>
+
+            <div className="time-info-item">
+              <label>Duration (minutes)</label>
+              <input
+                type="number"
+                min="1"
+                value={examInfo.duration}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  if (value > 0 || e.target.value === "") {
+                    setExamInfo({ ...examInfo, duration: value });
+                  }
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Questions */}
+        {questions.map((q, index) => (
+          <div key={index} className="form-card question-card">
+            <div className="question-header">
+              <div className="question-input-wrapper">
+                <span className="question-number">Q{index + 1}.</span>
+
+                <textarea
+                  ref={(el) => (questionRefs.current[index] = el)}
+                  className="question-input"
+                  placeholder="Enter your question here..."
+                  value={q.question}
+                  onChange={(e) => {
+                    handleQuestionChange(index, "question", e.target.value);
+                    autoResize(e.target);
+                  }}
+                  rows={1}
+                  required
+                />
+              </div>
+
+              <div className="question-actions">
+                <button
+                  type="button"
+                  className="icon-btn image-btn"
+                  onClick={() => document.getElementById(`image-input-${index}`).click()}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                </button>
+                <select
+                  className="question-type-select"
+                  value={q.type}
+                  onChange={(e) =>
+                    handleQuestionChange(index, "type", e.target.value)
+                  }
+                >
+                  <option value="MCQ">Multiple choice</option>
+                  <option value="NAT">Numerical</option>
+                </select>
+                {questions.length > 1 && (
+                  <button
+                    type="button"
+                    className="icon-btn delete-btn"
+                    onClick={() => handleRemoveQuestion(index)}
+                  >
+                    <RxCross2 size={20} />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <input
+              id={`image-input-${index}`}
               type="file"
-              className='q-image-input'
+              className="hidden-file-input"
               accept="image/*"
               onChange={(e) => {
                 const file = e.target.files[0];
@@ -338,22 +399,94 @@ useEffect(() => {
               }}
             />
 
-
-              <div className="question-type">
-                <label>Type</label>
-                <select
-                  value={q.type}
-                  onChange={(e) =>
-                    handleQuestionChange(index, "type", e.target.value)
-                  }
-                >
-                  <option value="MCQ">MCQ</option>
-                  <option value="NAT">Numerical</option>
-                </select>
+            {q.image && (
+              <div className="image-preview">
+                <span className="image-name">{q.image.name}</span>
               </div>
+            )}
 
-              <div className="marking-scheme">
-                <div className="mark-box green">
+            {q.type === "MCQ" && (
+              <div className="options-container">
+                {q.options.map((opt, i) => (
+                  <div key={i} className="option-row">
+                    <div className="radio-circle"></div>
+                    <input
+                      type="text"
+                      className="option-input"
+                      placeholder={`Option ${i + 1}`}
+                      value={opt}
+                      onChange={(e) =>
+                        handleOptionChange(index, i, e.target.value)
+                      }
+                      required
+                    />
+                  </div>
+                ))}
+
+                <div className="options-controls">
+                  <button
+                    type="button"
+                    className="text-btn"
+                    onClick={() => addOption(index)}
+                    disabled={q.options.length >= 5}
+                  >
+                    Add option
+                  </button>
+                  <span className="separator">or</span>
+                  <button
+                    type="button"
+                    className="text-btn"
+                    onClick={() => removeOption(index)}
+                    disabled={q.options.length <= 2}
+                  >
+                    Remove option
+                  </button>
+                </div>
+
+                <div className="correct-answer-section">
+                  <label className="correct-answer-label">Correct Answer</label>
+                  <select
+                    className="correct-answer-select"
+                    value={q.correctAnswer}
+                    required
+                    onChange={(e) =>
+                      handleQuestionChange(index, "correctAnswer", e.target.value)
+                    }
+                  >
+                    <option value="">Select correct option</option>
+                    {q.options.map((opt, i) => (
+                      <option key={i} value={opt}>
+                        Option {i + 1}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+
+            {q.type === "NAT" && (
+              <div className="numerical-answer-section">
+                <label className="numerical-answer-label">Correct Answer</label>
+                <input
+                  type="number"
+                  className="numerical-answer-input"
+                  placeholder="Enter correct numerical answer"
+                  value={q.correctAnswer}
+                  onChange={(e) => {
+                    const value = e.target.value;
+        
+                    if (value === "" || !isNaN(value)) {
+                      handleQuestionChange(index, "correctAnswer", value);
+                    }
+                  }}
+                  required
+                />
+              </div>
+            )}
+
+            <div className="question-footer">
+              <div className="marking-scheme-compact">
+                <div className="mark-item">
                   <label>Marks</label>
                   <input
                     type="number"
@@ -364,7 +497,7 @@ useEffect(() => {
                     required
                   />
                 </div>
-                <div className="mark-box red">
+                <div className="mark-item">
                   <label>Negative</label>
                   <input
                     type="number"
@@ -375,7 +508,7 @@ useEffect(() => {
                     required
                   />
                 </div>
-                <div className="mark-box gray">
+                <div className="mark-item">
                   <label>Unattempted</label>
                   <input
                     type="number"
@@ -387,143 +520,75 @@ useEffect(() => {
                   />
                 </div>
               </div>
-
-              {q.type === "MCQ" && (
-                <div className="options-section">
-                  {q.options.map((opt, i) => (
-                    <div key={i}>
-                      <label>Option {i + 1}</label>
-                      <input
-                        type="text"
-                        placeholder={`Option ${i + 1}`}
-                        value={opt}
-                        onChange={(e) =>
-                          handleOptionChange(index, i, e.target.value)
-                        }
-                        required
-                      />
-                    </div>
-                  ))}
-                 <div className="options-add-remove-btn">
-                
-                  <div className="remove-option-and-add-option">
-                    <button
-                      type="button"
-                      className="small-btn"
-                      onClick={() => addOption(index)}
-                      disabled={q.options.length >= 5}
-                    >
-                      + Add Option
-                    </button>
-
-                    <button
-                      type="button"
-                      className="small-btn"
-                      onClick={() => removeOption(index)}
-                      disabled={q.options.length <= 2}
-                    >
-                      - Remove Option
-                    </button>
-                  </div>
-               
-              </div>
-
-
-                  <div className="correct-ans-label">
-                    <label>Correct Answer</label>
-                  </div>
-
-                  <select
-                    value={q.correctAnswer}
-                    required
-                    onChange={(e) =>
-                      handleQuestionChange(index, "correctAnswer", e.target.value)
-                    }
-                  >
-                    <option value="">Select Correct Option</option>
-                    {q.options.map((opt, i) => (
-                      <option key={i} value={opt}>
-                        Option {i + 1}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {q.type === "NAT" && (
-                <div>
-                  <label>Correct Answer</label>
-                  <input
-                    type="number" 
-                    placeholder="Enter correct numerical answer"
-                    value={q.correctAnswer}
-                    onChange={(e) => {
-                      const value = e.target.value;
-          
-                      if (value === "" || !isNaN(value)) {
-                        handleQuestionChange(index, "correctAnswer", value);
-                      }
-                    }}
-                    required
-                  />
-                </div>
-              )}
-
             </div>
-          ))}
-
-          <div className="form-buttons">
-            <button type="button" className="add-q-btn" onClick={addQuestion}>
-              + Add Question
-            </button>
-            <button
-              type="button"
-              className="submit-btn"
-              onClick={() => setShowModal(true)}
-              disabled={submit}
-
-            >
-              Submit Exam
-            </button>
           </div>
-        </form>
+        ))}
 
+        {/* Add Question Button */}
+        <div className="add-question-container">
+          <button type="button" className="add-question-btn" onClick={addQuestion}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="16"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            Add Question
+          </button>
+        </div>
+
+        {/* Submit Button */}
+        <div className="submit-container">
+          <button
+            type="button"
+            className="submit-exam-btn"
+            onClick={() => setShowModal(true)}
+            disabled={submit}
+          >
+            Submit Exam
+          </button>
+        </div>
+
+        {/* Modal */}
         {showModal && (
           <div className="modal-overlay">
             <div className="modal-content">
-              <h3>Set Exam Code & Password</h3>
+              <h3 className="modal-title">Set Exam Security</h3>
 
-              {error && <p style={{ color: "red" }}>{error}</p>}
+              {error && <div className="error-message">{error}</div>}
 
-              <label>Exam Code</label>
-              <input
-                type="text"
-                value={examSecurity.code}
-                onChange={(e) =>
-                  setExamSecurity({ ...examSecurity, code: e.target.value })
-                }
-              />
-              <label>Password</label>
-              <input
-                type="password"
-                value={examSecurity.password}
-                onChange={(e) =>
-                  setExamSecurity({ ...examSecurity, password: e.target.value })
-                }
-              />
+              <div className="modal-field">
+                <label>Exam Code</label>
+                <input
+                  type="text"
+                  placeholder="Enter exam code"
+                  value={examSecurity.code}
+                  onChange={(e) =>
+                    setExamSecurity({ ...examSecurity, code: e.target.value })
+                  }
+                />
+              </div>
+              
+              <div className="modal-field">
+                <label>Password</label>
+                <input
+                  type="password"
+                  placeholder="Enter password"
+                  value={examSecurity.password}
+                  onChange={(e) =>
+                    setExamSecurity({ ...examSecurity, password: e.target.value })
+                  }
+                />
+              </div>
 
               <div className="modal-buttons">
-                <button className="small-btn" onClick={handleSubmit} disabled={submit}>
-                  Confirm
-                </button>
-                <button
-                  className="small-btn"
-                  onClick={() => {
-                    setShowModal(false);
-                    setError("");
-                  }}
-                >
+                <button className="modal-btn cancel-btn" onClick={() => {
+                  setShowModal(false);
+                  setError("");
+                }}>
                   Cancel
+                </button>
+                <button className="modal-btn confirm-btn" onClick={handleSubmit} disabled={submit}>
+                  Confirm
                 </button>
               </div>
             </div>
