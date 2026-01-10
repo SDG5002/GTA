@@ -19,6 +19,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use((req, res, next) => {
+  res.setHeader(
+    "Cross-Origin-Opener-Policy",
+    "same-origin-allow-popups"
+  );
+  next();
+});
+
+
 mongoose.connect(uri)
   .then(() => console.log("DB Connected"))
   .catch((err) => console.error("DB Connection Error:", err));
