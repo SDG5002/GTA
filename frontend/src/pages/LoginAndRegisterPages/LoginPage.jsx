@@ -4,12 +4,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../api/axiosInstance';
 import { AuthContext } from '../../context/AuthContext';
 import GoogleLoginButton from '../../components/GoogleLogin/GoogleLogin';
+import { toast } from 'react-hot-toast';
 
 function LoginPage() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,7 +17,6 @@ function LoginPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError('');
     axiosInstance
       .post('/user/login', {
         email: formData.email,
@@ -34,7 +33,7 @@ function LoginPage() {
         }
       })
       .catch((err) => {
-        setError(err.response?.data?.error || 'Something went wrong while login');
+        toast.error(err.response?.data?.error || 'Something went wrong while login');
       });
   };
 
@@ -52,7 +51,6 @@ function LoginPage() {
 
         <div className="auth-right">
           <h2>Login</h2>
-          {error && <div className="form-error">{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="email">Email</label>

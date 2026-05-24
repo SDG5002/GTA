@@ -15,7 +15,6 @@ function RegisterPage() {
 
   const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false); 
 
   const handleChange = (e) => {
@@ -26,16 +25,15 @@ function RegisterPage() {
     e.preventDefault();
 
     if (formData.password.length < 5) {
-      setError("Passwords must be at least 5 characters long.");
+      toast.error("Passwords must be at least 5 characters long.");
       return;
     }
 
     if (!formData.role) {
-      setError('Please select a role.');
+      toast.error('Please select a role.');
       return;
     }
 
-    setError('');
     setIsSubmitting(true); 
 
     axiosInstance
@@ -66,7 +64,6 @@ function RegisterPage() {
          <div className="auth-right">
         
         <h2>Register</h2>
-        {error && <div className="form-error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name</label>
