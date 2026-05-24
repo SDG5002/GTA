@@ -2,11 +2,9 @@ import "./Home.css";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axiosInstance from "../../../api/axiosInstance";
-import AIQuizPrompt from "../../../components/AIQuizPrompt/AIQuizPrompt";
 
 function Home() {
   const navigate = useNavigate();
-  const [modal, setModal] = useState(false);
 
   const [stats, setStats] = useState({
     totalExams: 0,
@@ -35,8 +33,6 @@ function Home() {
 
   return (
     <>
-      {modal && <AIQuizPrompt onClose={() => setModal(false)} />}
-
       <div className="dashboard-wrapper">
 
         {/* TOP SECTION */}
@@ -61,7 +57,7 @@ function Home() {
               <button onClick={() => navigate("/teacher-dashboard/set-exam")}>
                 Manual Quiz
               </button>
-              <button onClick={() => setModal(true)}>
+              <button onClick={() => navigate("/teacher-dashboard/ai-quiz")}>
                 AI Auto Quiz
               </button>
             </div>

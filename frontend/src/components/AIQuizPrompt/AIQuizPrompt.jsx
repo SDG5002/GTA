@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { HiSparkles } from "react-icons/hi";
 import Loader from "../Loader/Loader";
 
-const AIQuizPrompt = ({ onClose }) => {
+const AIQuizPrompt = () => {
   const [topic, setTopic] = useState("");
   const [questionCount, setQuestionCount] = useState("");
   const [mcqCount, setMcqCount] = useState("");
@@ -78,7 +78,7 @@ const AIQuizPrompt = ({ onClose }) => {
   };
 
   return (
-    <div className="ai-modal-overlay">
+    <div className="ai-page-wrapper">
       {submit && (
         <Loader/>
        
@@ -165,8 +165,8 @@ const AIQuizPrompt = ({ onClose }) => {
         </div>
 
         <div className="ai-btn-row">
-          <button className="ai-cancel-btn" onClick={onClose}>
-            Cancel
+          <button className="ai-cancel-btn" onClick={() => navigate(-1)}>
+            ← Back
           </button>
           <button className="ai-generate-btn" onClick={handleSubmit} disabled={submit}>
             <HiSparkles className="ai-icon" /> Create Your AI Quiz

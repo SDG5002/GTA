@@ -5,6 +5,7 @@ import RegisterPage from './pages/LoginAndRegisterPages/RegisterPage.jsx';
 import Unauthorized from './pages/UnauthorizedPage/Unauthorized.jsx';
 import Home from './pages/TeacherDashboard/Home/Home';
 import SetExam from './pages/TeacherDashboard/SetExam/SetExam.jsx';
+import AIQuizPrompt from './components/AIQuizPrompt/AIQuizPrompt.jsx';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 import './App.css';
@@ -87,6 +88,7 @@ function App() {
         >
           <Route path="" element={<Home />} />
           <Route path="set-exam" element={<SetExam />} />
+          <Route path="ai-quiz" element={<AIQuizPrompt />} />
           
           <Route path="reports" element={<TeacherReports />} />
           <Route path="reports/questionPaper/:examId" element={<ViewQuestionPaper />} />
