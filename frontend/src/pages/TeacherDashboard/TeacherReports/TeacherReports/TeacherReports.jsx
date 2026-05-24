@@ -3,13 +3,24 @@ import { useNavigate } from "react-router-dom";
 import "./TeacherReports.css";
 import axiosInstance from "../../../../api/axiosInstance";
 import Loader from "../../../../components/Loader/Loader";
+import IpRestrictionModal from "./IpRestrictionModal";
 
 const TeacherReports = () => {
   const [exams, setExams] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
   const [deleteOn,setDeleteOn]=useState(false);//it's for setting loader after user deletes the file 
+  const [ipModalOpen, setIpModalOpen] = useState(false);
+  const [ipActiveExam, setIpActiveExam] = useState(null);
   const navigate = useNavigate();
+
+  const handleSaveIp = (examId, ipRestriction, allowedIp) => {
+    setExams((prev) =>
+      prev.map((exam) =>
+        exam.id === examId ? { ...exam, ipRestriction, allowedIp } : exam
+      )
+    );
+  };
 
   useEffect(() => {
     axiosInstance
@@ -48,7 +59,18 @@ const TeacherReports = () => {
               <div className="teacher-report-top-row">
                 <span className="teacher-report-exam-number">{index + 1}.</span>
                 <div className="teacher-report-exam-detail">
-                  <h2 className="teacher-report-exam-title">{exam.title}</h2>
+                  <h2 className="teacher-report-exam-title">
+                    {exam.title}
+                    {exam.ipRestriction ? (
+                      <span className="ip-badge active-ip" title={`Restricted to IP: ${exam.allowedIp}`}>
+                        🔒 IP: {exam.allowedIp}
+                      </span>
+                    ) : (
+                      <span className="ip-badge inactive-ip">
+                        🌐 Public
+                      </span>
+                    )}
+                  </h2>
                   <p className="teacher-report-exam-desc">{exam.description}</p>
                 </div>
                 <span className="teacher-report-exam-date">
@@ -94,6 +116,15 @@ const TeacherReports = () => {
                   }
                 >
                    Manage Sessions
+                </button>
+                <button
+                  className="teacher-report-btn teacher-report-ip-btn"
+                  onClick={() => {
+                    setIpActiveExam(exam);
+                    setIpModalOpen(true);
+                  }}
+                >
+                   IP Restriction
                 </button>
                 <button
                   className="teacher-report-btn teacher-report-delete-btn"
@@ -149,10 +180,20 @@ const TeacherReports = () => {
               </button>
             </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
-};
+          </div>
+        )}
+        {ipModalOpen && ipActiveExam && (
+          <IpRestrictionModal
+            exam={ipActiveExam}
+            onClose={() => {
+              setIpModalOpen(false);
+              setIpActiveExam(null);
+            }}
+            onSave={handleSaveIp}
+          />
+        )}
+      </div>
+    );
+  };
 
 export default TeacherReports;

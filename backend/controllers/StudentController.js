@@ -4,6 +4,7 @@ import User from "../DB/models/userModel.js";
 import Exam from "../DB/models/ExamModel.js";
 import ExamResponses from "../DB/models/ExamResponses.js";
 import { sendMarksEmail } from "../utils/marksMailer.js";
+import { getClientIp } from "../utils/ipHelper.js";
 
 
 const DATE_FORMAT_OPTIONS = {
@@ -29,6 +30,13 @@ export const joinExam = wrapAsync(async (req, res, next) => {
 
   const exam = await Exam.findOne({ code: examCode, password: examPassword })
   if (!exam) return next(new ExpressError(404, "Invalid exam code or password"))
+
+  if (exam.ipRestriction) {
+    const clientIp = getClientIp(req);
+    if (clientIp !== exam.allowedIp) {
+      return next(new ExpressError(403, `IP Restriction Active. Your IP is ${clientIp || "unknown"}, which is not allowed. Please connect to the exam Wi-Fi or tell your professor your IP.`));
+    }
+  }
 
   const response = await ExamResponses.findOne({ exam: exam._id, student: _id });
   if(response?.status === "submitted") return next(new ExpressError(400, "User had Alredy Submitted this Exam"));
@@ -58,6 +66,13 @@ export const startExamInfo = wrapAsync(async (req, res, next) => {
 
   const exam = await Exam.findById(examId);
   if (!exam) return next(new ExpressError(404, "Invalid exam id"));
+
+  if (exam.ipRestriction) {
+    const clientIp = getClientIp(req);
+    if (clientIp !== exam.allowedIp) {
+      return next(new ExpressError(403, `IP Restriction Active. Your IP is ${clientIp || "unknown"}, which is not allowed. Please connect to the exam Wi-Fi or tell your professor your IP.`));
+    }
+  }
 
  
   let alResponse = await ExamResponses.findOne({ exam: examId, student: _id });
@@ -90,6 +105,13 @@ export const startExam = wrapAsync(async (req, res, next) => {
 
   const exam = await Exam.findById(examId);
   if (!exam) return next(new ExpressError(404, "Invalid exam id"));
+
+  if (exam.ipRestriction) {
+    const clientIp = getClientIp(req);
+    if (clientIp !== exam.allowedIp) {
+      return next(new ExpressError(403, `IP Restriction Active. Your IP is ${clientIp || "unknown"}, which is not allowed. Please connect to the exam Wi-Fi or tell your professor your IP.`));
+    }
+  }
 
  
   let alResponse = await ExamResponses.findOne({ exam: examId, student: _id });

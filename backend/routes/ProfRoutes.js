@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { killSession,manageSessions,uploadExam, aiGeneratedQuiz ,deleteExam, getExams,getExam,getAnalysis,getStats,reReleaseResults} from "../controllers/ProfController.js";
+import { killSession,manageSessions,uploadExam, aiGeneratedQuiz ,deleteExam, getExams,getExam,getAnalysis,getStats,reReleaseResults, getMyIp, setIpRestriction } from "../controllers/ProfController.js";
 import authenticate from "../middlewares/authentication.js";
 import { upload } from "../middlewares/multerMiddleware.js";
 
@@ -27,6 +27,10 @@ router.route("/aiGeneratedQuiz")
         .post(authenticate,aiGeneratedQuiz);
 router.route("/killSession")
         .post(authenticate,killSession);
+router.route("/myIp")
+        .get(authenticate,getMyIp);
+router.route("/setIpRestriction/:examId")
+        .put(authenticate,setIpRestriction);
 
 export default router;
 

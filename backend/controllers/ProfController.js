@@ -6,6 +6,7 @@ import { sendMarksEmail } from "../utils/marksMailer.js";
 import ExamResponses from "../DB/models/ExamResponses.js";
 import gemini from "../utils/ai.js";
 import {deleteFromCloudinary,uploadOnCloudinary} from "../utils/cloudinary.js";
+import { getClientIp } from "../utils/ipHelper.js";
 
 
 const DATE_FORMAT_OPTIONS = {
@@ -126,7 +127,9 @@ export const getExams = wrapAsync(async (req, res, next) => {
       questions: examI.questions,
       duration: examI.duration,
       scheduledAt: examI.scheduledAt,
-      closeAt: examI.closeAt
+      closeAt: examI.closeAt,
+      ipRestriction: examI.ipRestriction,
+      allowedIp: examI.allowedIp
     })),
   });
 });
@@ -528,4 +531,36 @@ export const killSession = wrapAsync(async (req, res, next) => {
 
 
   res.status(200).json({ message: `Session of student ${student.email} has been killed successfully` });
+});
+
+export const getMyIp = wrapAsync(async (req, res, next) => {
+  const ip = getClientIp(req);
+  res.status(200).json({ ip });
+});
+
+export const setIpRestriction = wrapAsync(async (req, res, next) => {
+  const { examId } = req.params;
+  const { ipRestriction, allowedIp } = req.body;
+
+  if (!examId) return next(new ExpressError(400, "Exam ID is missing"));
+
+  const exam = await Exam.findById(examId);
+  if (!exam) return next(new ExpressError(404, "Exam not found"));
+
+  if (!exam.professor.equals(req.user._id)) {
+    return next(new ExpressError(403, "Access denied: Not your exam"));
+  }
+
+  exam.ipRestriction = !!ipRestriction;
+  exam.allowedIp = ipRestriction ? allowedIp : "";
+  await exam.save();
+
+  res.status(200).json({
+    message: "IP restriction updated successfully",
+    exam: {
+      id: exam._id,
+      ipRestriction: exam.ipRestriction,
+      allowedIp: exam.allowedIp
+    }
+  });
 });

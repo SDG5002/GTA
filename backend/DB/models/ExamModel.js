@@ -94,6 +94,14 @@ const examSchema = new Schema({
   closeAt: {
     type: Date,
     required: [true, "Exam close time is required"]
+  },
+  ipRestriction: {
+    type: Boolean,
+    default: false
+  },
+  allowedIp: {
+    type: String,
+    default: ""
   }
 }, {
   timestamps: true
