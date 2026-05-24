@@ -51,7 +51,8 @@
 }
 
 .exam-info-title{
-  width:80%;
+  flex: 1;
+  min-width: 0;
 }
 .exam-info-title h2{
   word-wrap: break-word; 
@@ -60,6 +61,8 @@
 
 .time-remaining{
    font-size: 1.04rem;
+   white-space: nowrap;
+   flex-shrink: 0;
 }
 .time-remaining .timer.green{
   color:#05b356;
@@ -562,9 +565,7 @@ ul {
 li {
   margin-bottom: 8px;
 }
-.exam-info-title{
-  width:100%;
-}
+
 
 .rules-title{
   font-size: 1.2rem!important;
