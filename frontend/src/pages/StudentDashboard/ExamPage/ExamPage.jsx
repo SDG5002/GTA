@@ -26,9 +26,13 @@ const ExamPage = () => {
   const [ruleModal,setRuleModal]=useState(false);
   
  const navigate = useNavigate();
-  
 
-useEffect(() => {
+  const autoSubmitRef = useRef();
+  useEffect(() => {
+    autoSubmitRef.current = autoSubmitExam;
+  });
+
+  useEffect(() => {
     if (!started) return;
 
     const handleViolation = () => {
@@ -40,7 +44,7 @@ useEffect(() => {
       } else if (switchCount.current === 3) {
         toast.error("Final warning: Do not leave the exam tab!");
       } else if (switchCount.current === 6) {
-        autoSubmitExam();
+        autoSubmitRef.current();
         toast.error("Exam ended due to repeated tab switching.");
       }
     };
@@ -68,7 +72,7 @@ useEffect(() => {
         "If you go back, your exam will be submitted automatically. Are you sure?"
       );
       if (confirmLeave) {
-        autoSubmitExam();
+        autoSubmitRef.current();
         window.history.go(-1); 
       } else {
         window.history.pushState(null, "", window.location.href);
@@ -174,7 +178,7 @@ useEffect(() => {
     setRemainingTime((prev) => {
       if (prev <= 1) {
         clearInterval(timer);
-        autoSubmitExam();
+        autoSubmitRef.current();
         return 0;
       }
       return prev - 1;
@@ -437,23 +441,25 @@ useEffect(() => {
           </div>
 
           <div className="navigation-buttons">
-            <button
-              type="button"
-              className="nav-btn"
-              onClick={prevQuestion}
-              disabled={currentQ === 0}
-            >
-              ← Previous
-            </button>
-            {currentQ === exam.questions.length - 1 ? (
-              <button type="button" className="submit-btn" onClick={() => setSubModal(true)}>
-                Finish
+            <div className="nav-buttons-inner">
+              <button
+                type="button"
+                className="nav-btn"
+                onClick={prevQuestion}
+                disabled={currentQ === 0}
+              >
+                ← Previous
               </button>
-            ) : (
-              <button type="button" className="nav-btn" onClick={nextQuestion}>
-                Next →
-              </button>
-            )}
+              {currentQ === exam.questions.length - 1 ? (
+                <button type="button" className="submit-btn" onClick={() => setSubModal(true)}>
+                  Finish
+                </button>
+              ) : (
+                <button type="button" className="nav-btn" onClick={nextQuestion}>
+                  Next →
+                </button>
+              )}
+            </div>
           </div>
         </form>
         </div>

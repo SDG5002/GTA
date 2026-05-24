@@ -274,14 +274,25 @@
 .navigation-buttons {
   position: fixed;
   bottom: 0;
-  left: 220px;
-  right: 220px;
+  left: 0;
+  right: 0;
   background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 0;
+  z-index: 100;
+  border-top: 1px solid #e2e8f0;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+}
+.nav-buttons-inner {
+  width: 100%;
+  max-width: 1100px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 40px;
-  z-index: 100;
+  padding: 0 5rem;
+  box-sizing: border-box;
 }
 .nav-btn,
 .submit-btn {
@@ -387,11 +398,15 @@
   }
 
   .navigation-buttons {
-    left: 10px;
-    right: 10px;
+    left: 0;
+    right: 0;
+    padding: 12px 0;
+    border-top: 1px solid #e2e8f0;
+  }
+  .nav-buttons-inner {
     flex-direction: column;
     gap: 10px;
-    padding: 12px 20px;
+    padding: 0 20px;
   }
 
   .nav-btn,
