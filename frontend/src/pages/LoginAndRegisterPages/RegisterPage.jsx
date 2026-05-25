@@ -39,7 +39,7 @@ function RegisterPage() {
     axiosInstance
       .post('/user/register', formData, { withCredentials: true })
       .then(() => {
-        toast.success("Verification email sent! Please check your inbox.");
+        toast.success("Registration successful! Please log in.");
         setFormData({ name: '', email: '', password: '', role: '' });
         navigate('/login');
       })

@@ -542,17 +542,25 @@ export const setIpRestriction = wrapAsync(async (req, res, next) => {
   const { examId } = req.params;
   const { ipRestriction, allowedIp } = req.body;
 
-  if (!examId) return next(new ExpressError(400, "Exam ID is missing"));
+  if (!examId) {
+    return next(new ExpressError(400, "Exam ID is missing"));
+  }
 
   const exam = await Exam.findById(examId);
-  if (!exam) return next(new ExpressError(404, "Exam not found"));
+
+  if (!exam) {
+    return next(new ExpressError(404, "Exam not found"));
+  }
 
   if (!exam.professor.equals(req.user._id)) {
     return next(new ExpressError(403, "Access denied: Not your exam"));
   }
 
-  exam.ipRestriction = !!ipRestriction;
-  exam.allowedIp = ipRestriction ? allowedIp : "";
+  const isRestricted = ipRestriction === "true";
+
+  exam.ipRestriction = isRestricted;
+  exam.allowedIp = isRestricted ? allowedIp : "";
+
   await exam.save();
 
   res.status(200).json({
@@ -560,7 +568,7 @@ export const setIpRestriction = wrapAsync(async (req, res, next) => {
     exam: {
       id: exam._id,
       ipRestriction: exam.ipRestriction,
-      allowedIp: exam.allowedIp
-    }
+      allowedIp: exam.allowedIp,
+    },
   });
 });

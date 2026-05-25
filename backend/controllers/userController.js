@@ -1,7 +1,6 @@
 import wrapAsync from "../utils/wrapAsync.js";
 import ExpressError from "../utils/ExpressError.js";
 import User from "../DB/models/userModel.js";
-import { emailVerMailer } from "../utils/emailVerrficationMailer.js";
 import jwt from "jsonwebtoken";
 
 
@@ -64,12 +63,8 @@ export const register = wrapAsync(async (req, res, next) => {
   const { name, role, password, email } = req.body;
   const existedUser = await User.findOne({ email });
 
-  if (existedUser && existedUser.isVerified) {
+  if (existedUser) {
     return next(new ExpressError(409, "User already exists with given Email"));
-  }
-
-  if (existedUser && !existedUser.isVerified) {
-    await User.findByIdAndDelete(existedUser._id);
   }
 
   const newUser = new User({
@@ -77,24 +72,13 @@ export const register = wrapAsync(async (req, res, next) => {
     email,
     password,
     role,
-    isVerified: false,
+    isVerified: true,
   });
 
   await newUser.save();
 
-  const emailVerificationToken = jwt.sign(
-    { _id: newUser._id, email: newUser.email, role: newUser.role },
-    process.env.EMAIL_VERIFICATION_SECRET,
-    { expiresIn: "15m" }
-  );
-
-   const verificationUrl = `${process.env.BACKEND_URL}/user/verify-email?token=${emailVerificationToken}`;
-
-
-  await emailVerMailer(verificationUrl, newUser.email);
-
   res.status(201).json({
-    msg: "Registration successful! Please check your email to verify your account.",
+    msg: "Registration successful! Please log in.",
     user: {
       name: newUser.name,
       email: newUser.email,

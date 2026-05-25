@@ -9,7 +9,7 @@ GTA (Goa Testing Agency) is a robust, full-stack, secure online exam creation an
 ### 🔑 1. Authentication & Security
 - **Multi-Role User Accounts**: Separate access portals and layouts for **Students** and **Professors** (`ProtectedRoute` route guards).
 - **Google OAuth Integration**: Simple, passwordless sign-in option using Google Login.
-- **Email Verification**: Secure activation mechanism utilizing transactional emails (Nodemailer).
+- **Standard Registration**: Quick and direct account registration for seamless signup.
 - **Dual-Token JWT Auth**: Secure authentication flow using an short-lived `AccessToken` and a long-lived `RefreshToken` stored securely to automatically refresh sessions during long exams.
 
 ### 📝 2. Exam Creation & Configuration (Professor)
@@ -113,7 +113,7 @@ GTA (Goa Testing Agency) is a robust, full-stack, secure online exam creation an
 - `history`: Timeline logs of user actions (e.g., *"Joined exam X at 10:00 AM"*).
 - `exams`: Array of exam references created (if professor).
 - `responses`: Array of completed exam response references (if student).
-- `isVerified`: Email verification status indicator.
+- `isVerified`: Account status indicator (defaults to `true`).
 
 ### 📝 Exam Model (`ExamModel.js`)
 - `professor`: Reference link to the creator.
