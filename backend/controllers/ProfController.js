@@ -556,7 +556,7 @@ export const setIpRestriction = wrapAsync(async (req, res, next) => {
     return next(new ExpressError(403, "Access denied: Not your exam"));
   }
 
-  const isRestricted = ipRestriction === "true";
+  const isRestricted = ipRestriction === "true" || ipRestriction === true;
 
   exam.ipRestriction = isRestricted;
   exam.allowedIp = isRestricted ? allowedIp : "";
