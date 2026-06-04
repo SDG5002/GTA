@@ -28,6 +28,14 @@ const responseSchema = new Schema({
   score:{
     type: Number
   },
+  autoSubmitted: {
+    type: Boolean,
+    default: false
+  },
+  reloadCount: {
+    type: Number,
+    default: 0
+  },
 
   attemptedAt: { type: Date, default: Date.now }
 }, { timestamps: true });

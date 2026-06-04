@@ -38,10 +38,16 @@ function RegisterPage() {
 
     axiosInstance
       .post('/user/register', formData, { withCredentials: true })
-      .then(() => {
-        toast.success("Registration successful! Please log in.");
-        setFormData({ name: '', email: '', password: '', role: '' });
-        navigate('/login');
+      .then((res) => {
+        toast.success("Registration successful!");
+        const user = res.data.user;
+        setUser(user);
+
+        if (user.role === 'professor') {
+          navigate('/teacher-dashboard');
+        } else {
+          navigate('/student-dashboard');
+        }
       })
       .catch((err) => {
         toast.error(err.response?.data?.error || "Something went wrong during registration");

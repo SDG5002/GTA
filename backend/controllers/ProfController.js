@@ -34,7 +34,7 @@ export const uploadExam = wrapAsync(async (req, res, next) => {
     
   //as our forma data is mixed with files and text it cant be directly parsed by the outer middleware in app.js
   const examInfo = JSON.parse(req.body.examInfo);
-  console.log(examInfo);
+ 
 
   const code=examInfo.code;
 
@@ -124,7 +124,6 @@ export const getExams = wrapAsync(async (req, res, next) => {
       description: examI.description,
       totalMarks: examI.totalMarks,
       createdAt: examI.createdAt,
-      questions: examI.questions,
       duration: examI.duration,
       scheduledAt: examI.scheduledAt,
       closeAt: examI.closeAt,
@@ -444,12 +443,13 @@ export const manageSessions = wrapAsync(async (req, res, next) => {
   
   const sessions = await ExamResponses.find({ exam: examId })
     .populate("student", "name email")//only from student populate name and email
-    .select("status student");
+    .select("status student autoSubmitted");
 
   const sessionData = sessions.map((session) => ({
     studentName: session.student.name,
     studentEmail: session.student.email,
     status: session.status,
+    autoSubmitted: session.autoSubmitted || false,
   }));
 
   res.status(200).json({

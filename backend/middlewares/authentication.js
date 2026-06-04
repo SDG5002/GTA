@@ -16,6 +16,8 @@ const authenticate = async (req, res, next) => {
   
       return next();
     } catch (err) {
+      console.log("invalid access token ")
+      return next(new ExpressError(401, "Invalid access token. Please log in again."));
      
     }
   }

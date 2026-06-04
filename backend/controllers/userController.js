@@ -48,8 +48,8 @@ export const refreshAccessToken = wrapAsync(async (req, res) => {
   
   const isProduction = process.env.NODE_ENV === "production";
   const options = {
-    httpOnly: true,
-    secure: isProduction, 
+     httpOnly: true,
+     secure: isProduction, 
      sameSite: isProduction ? "none" : "lax",
   };
 
@@ -77,37 +77,7 @@ export const register = wrapAsync(async (req, res, next) => {
 
   await newUser.save();
 
-  res.status(201).json({
-    msg: "Registration successful! Please log in.",
-    user: {
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role,
-      isVerified: newUser.isVerified,
-    },
-  });
-});
-
-
-
-export const verifyEmail = wrapAsync(async (req, res, next) => {
-
-  const { token } = req.query;
-  if (!token) {
-    throw new ExpressError(400, "Invalid or missing token");
-  }
-
-  let decoded;
-  try {
-    decoded = jwt.verify(token, process.env.EMAIL_VERIFICATION_SECRET);
-  } catch (err) {
-    return res.redirect(`${process.env.FRONTEND_URL}/login?verified=failed`);
-  }
-
- await User.findByIdAndUpdate(decoded._id, { isVerified: true });
-
- 
-  const { accessToken, refreshToken } = await generateAccessAndrefreshTokens(decoded._id);
+  const { accessToken, refreshToken } = await generateAccessAndrefreshTokens(newUser._id);
 
   const isProduction = process.env.NODE_ENV === "production";
   const options = {
@@ -118,16 +88,15 @@ export const verifyEmail = wrapAsync(async (req, res, next) => {
 
   res.cookie("refreshToken", refreshToken, options);
   res.cookie("accessToken", accessToken, options);
- 
-   
-  if (decoded.role === "student") {
-    return res.redirect(`${process.env.FRONTEND_URL}/student-dashboard`);
-  }
-  if (decoded.role === "professor") {
-    return res.redirect(`${process.env.FRONTEND_URL}/teacher-dashboard`);
-  }
 
-  res.redirect(`${process.env.FRONTEND_URL}/login?verified=success`);
+  const currentUser = await User.findById(newUser._id).select(
+    "-password -refreshToken"
+  );
+
+  res.status(201).json({
+    msg: "Registration successful!",
+    user: currentUser,
+  });
 });
 
 
@@ -221,6 +190,7 @@ export const logout=wrapAsync(async(req,res)=>{
 })
 
 
+//This func works for both login and sign up of google
 export const googleLogin = wrapAsync(async (req, res, next) => {
   const { name, email } = req.body;
 

@@ -5,13 +5,12 @@ import { AiOutlineClose } from "react-icons/ai";
 
 const IpRestrictionModal = ({ exam, onClose, onSave }) => {
   const [enabled, setEnabled] = useState(exam.ipRestriction || false);
-  const [ipMode, setIpMode] = useState("manual"); // default to manual
+  const [ipMode, setIpMode] = useState("manual"); 
   const [ipAddress, setIpAddress] = useState(exam.allowedIp || "");
   const [loadingIp, setLoadingIp] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Sync modal state when exam changes (modal is shared across exams)
-  // No network calls here — fetch only happens on explicit user action
+
   useEffect(() => {
     if (exam.allowedIp) {
       setIpAddress(exam.allowedIp);

@@ -103,6 +103,15 @@
   
 }
 
+.sessionpage-status-auto {
+  background-color: #f8d7da;
+  color: #842029;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
 .sessionpage-kill-btn {
   background-color: #dc3545;
   color: white;
@@ -238,5 +247,14 @@
     background-color: #fff3cd;
     color: #9c780b;
 
+}
+
+.sessionpage-status-auto {
+    border: none;
+    padding: 5px 6px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    background-color: #f8d7da;
+    color: #842029;
 }
 }

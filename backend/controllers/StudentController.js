@@ -55,6 +55,32 @@ export const joinExam = wrapAsync(async (req, res, next) => {
 });
 
 
+const calculateScore = (exam, answers, startTime) => {
+  let marks = 0;
+  const durationMs = exam.duration * 60 * 1000;
+  const bufferMs = 1 * 60 * 1000; // 1 minute buffer
+  const isLate = (Date.now() - startTime) > (durationMs + bufferMs);
+  const isPastCloseAt = exam.closeAt && (Date.now() > (new Date(exam.closeAt).getTime() + bufferMs));
+
+  if (isLate || isPastCloseAt) {
+    return 0;
+  }
+
+  for (const { questionId, selectedAnswer } of answers) {
+    const question = exam.questions.find((q) => q._id.toString() === questionId);
+    if (!question) continue;
+
+    if (selectedAnswer === question.correctAnswer) {
+      marks += question.marks;
+    } else if (!selectedAnswer || selectedAnswer === "unattempted") {
+      marks += question.unattemptedMarks;
+    } else {
+      marks += question.negativeMarks;
+    }
+  }
+  return marks;
+};
+
 export const startExamInfo = wrapAsync(async (req, res, next) => {
   const { examId } = req.params;
   const { _id } = req.user;
@@ -74,14 +100,14 @@ export const startExamInfo = wrapAsync(async (req, res, next) => {
     }
   }
 
- 
   let alResponse = await ExamResponses.findOne({ exam: examId, student: _id });
-  if(alResponse?.status === "submitted"){ 
-    return next(new ExpressError(400, "You have already submitted this exam"));}
+  if (alResponse?.status === "submitted") { 
+    return next(new ExpressError(400, "You have already submitted this exam"));
+  }
   
-
   res.status(200).json({
-    message: "Exam started successfully",
+    message: "Exam details retrieved",
+    alreadyStarted: !!alResponse,
     exam: {
       title: exam.title,
       examId: exam._id,
@@ -92,8 +118,8 @@ export const startExamInfo = wrapAsync(async (req, res, next) => {
       closeAt: exam.closeAt
     }
   });
-  
-})
+});
+
 export const startExam = wrapAsync(async (req, res, next) => {
   const { examId } = req.params;
   const { _id } = req.user;
@@ -113,22 +139,102 @@ export const startExam = wrapAsync(async (req, res, next) => {
     }
   }
 
- 
   let alResponse = await ExamResponses.findOne({ exam: examId, student: _id });
+  let response = null;
 
-  if(alResponse?.status === "submitted") return next(new ExpressError(400, "You have already submitted this exam"));
-  
-  let response=null
-  
-  if(!alResponse){
-      response=new ExamResponses({
+  if (alResponse) {
+    if (alResponse.status === "submitted") {
+      const savedResponses = {};
+      alResponse.answers.forEach((ans) => {
+        savedResponses[ans.questionId] = ans.selectedAnswer || "unattempted";
+      });
+      return res.status(200).json({
+        startedTime: alResponse.startTime,
+        endTime: new Date(alResponse.startTime).getTime() + exam.duration * 60 * 1000,
+        currentTime: Date.now(),
+        savedResponses,
+        submitted: true,
+        autoSubmitted: alResponse.autoSubmitted,
+        reloadCount: alResponse.reloadCount,
+        exam: {
+          title: exam.title,
+          examId: exam._id,
+          description: exam.description,
+          totalMarks: exam.totalMarks,
+          questions: exam.questions,
+          duration: exam.duration,
+          closeAt: exam.closeAt
+        }
+      });
+    }
+
+    // Increment reload count as a violation
+    alResponse.reloadCount = (alResponse.reloadCount || 0) + 1;
+
+    if (alResponse.reloadCount >= 3) {
+      // Auto-submit exam
+      alResponse.status = "submitted";
+      alResponse.autoSubmitted = true;
+      
+      const startTime = new Date(alResponse.startTime).getTime();
+      const marks = calculateScore(exam, alResponse.answers, startTime);
+      alResponse.score = marks;
+      await alResponse.save();
+
+      if (!user.responses.includes(alResponse._id)) {
+        user.responses.push(alResponse._id);
+      }
+      user.history.push({
+        message: `Your exam named ${exam.title} was AUTO-SUBMITTED due to reload violation at ${new Date().toLocaleString('en-IN', DATE_FORMAT_OPTIONS)}`,
+        createdAt: new Date(),
+      });
+      await user.save({ validateBeforeSave: false });
+
+      try {
+        const examWithProf = await Exam.findById(examId).populate("professor", "name");
+        const profName = examWithProf.professor.name;
+        sendMarksEmail(exam.title, profName, user.email, user.name, marks, exam.totalMarks);
+      } catch (err) {
+        console.error("Email send failed during auto-submit on reload", err);
+      }
+
+      const savedResponses = {};
+      alResponse.answers.forEach((ans) => {
+        savedResponses[ans.questionId] = ans.selectedAnswer || "unattempted";
+      });
+
+      return res.status(200).json({
+        startedTime: alResponse.startTime,
+        endTime: new Date(alResponse.startTime).getTime() + exam.duration * 60 * 1000,
+        currentTime: Date.now(),
+        savedResponses,
+        submitted: true,
+        autoSubmitted: true,
+        reloadCount: alResponse.reloadCount,
+        exam: {
+          title: exam.title,
+          examId: exam._id,
+          description: exam.description,
+          totalMarks: exam.totalMarks,
+          questions: exam.questions,
+          duration: exam.duration,
+          closeAt: exam.closeAt
+        }
+      });
+    }
+
+    await alResponse.save();
+  } else {
+    // First time starting
+    response = new ExamResponses({
       exam: exam._id,
       student: user._id,
       answers: exam.questions.map(q => ({
         questionId: q._id,
-        selectedAnswer: null
+        selectedAnswer: "unattempted"
       })),
-      startTime: Date.now()
+      startTime: Date.now(),
+      reloadCount: 0
     });
     await response.save();
 
@@ -137,15 +243,29 @@ export const startExam = wrapAsync(async (req, res, next) => {
       createdAt: new Date(),
     });
     await user.save({ validateBeforeSave: false });
-
   }
 
+  const activeResponse = alResponse || response;
+  const savedResponses = {};
+  activeResponse.answers.forEach((ans) => {
+    savedResponses[ans.questionId] = ans.selectedAnswer || "unattempted";
+  });
+
+  const startTimeMs = activeResponse.startTime.getTime();
+  const durationMs = exam.duration * 60 * 1000;
+  const closeAtMs = exam.closeAt ? new Date(exam.closeAt).getTime() : Infinity;
+  const currentTimeMs = Date.now();
+  const endTimeMs = Math.min(startTimeMs + durationMs, closeAtMs);
 
   res.status(200).json({
-    message: "Exam started successfully",
+    startedTime: startTimeMs,
+    endTime: endTimeMs,
+    currentTime: currentTimeMs,
+    savedResponses,
+    submitted: false,
+    reloadCount: activeResponse.reloadCount,
     exam: {
       title: exam.title,
-      startedTime: response ? response.startTime : alResponse.startTime,
       examId: exam._id,
       description: exam.description,
       totalMarks: exam.totalMarks,
@@ -155,7 +275,6 @@ export const startExam = wrapAsync(async (req, res, next) => {
     }
   });
 });
-
 
 export const submitExam = wrapAsync(async (req, res, next) => {
     const { examId } = req.params;
@@ -179,7 +298,7 @@ export const submitExam = wrapAsync(async (req, res, next) => {
     if (!response)
       return next(new ExpressError(400, "User has not joined this exam."));
 
-     const {responses}=req.body;
+     const {responses, autoSubmitted}=req.body;
  
      
      if(Object.keys(responses).length!=exam.questions.length) return next(new ExpressError(400, "Invalid number of responses, Try to contact your professor."));
@@ -193,24 +312,33 @@ export const submitExam = wrapAsync(async (req, res, next) => {
      user.responses.push(studentResponses._id);
      await user.save();
 
-     //Marks Calculations
+      //Marks Calculations
       let marks = 0;
 
-      for (const { questionId, selectedAnswer } of responses) {
-        const question = exam.questions.find((q) => q._id.toString() === questionId);
+      const startTime = new Date(response.startTime).getTime();
+      const durationMs = exam.duration * 60 * 1000;
+      const bufferMs = 1 * 60 * 1000; // 1 minute buffer
+      const isLate = (Date.now() - startTime) > (durationMs + bufferMs);
+      const isPastCloseAt = exam.closeAt && (Date.now() > (new Date(exam.closeAt).getTime() + bufferMs));
 
-        if (!question) {
-          return next(new ExpressError(400, `Invalid question ID: ${questionId}`));
+      if (isLate || isPastCloseAt) {
+        marks = 0;
+      } else {
+        for (const { questionId, selectedAnswer } of responses) {
+          const question = exam.questions.find((q) => q._id.toString() === questionId);
+
+          if (!question) {
+            return next(new ExpressError(400, `Invalid question ID: ${questionId}`));
+          }
+
+          if (selectedAnswer === question.correctAnswer) {
+            marks += question.marks;
+          } else if (!selectedAnswer || selectedAnswer === "unattempted") {
+            marks += question.unattemptedMarks;
+          } else {
+            marks += question.negativeMarks;
+          }
         }
-
-      if (selectedAnswer === question.correctAnswer) {
-          marks += question.marks;
-        } else if (!selectedAnswer || selectedAnswer === "unattempted") {
-          marks += question.unattemptedMarks;
-        } else {
-          marks += question.negativeMarks;
-        }
-
       }
     
    
@@ -224,10 +352,11 @@ export const submitExam = wrapAsync(async (req, res, next) => {
 
     studentResponses.score=marks;
     studentResponses.status="submitted";
+    studentResponses.autoSubmitted = autoSubmitted === true;
     await studentResponses.save();
 
     user.history.push({
-      message : "You have submitted exam named " + exam.title + " at " + new Date().toLocaleString('en-IN', DATE_FORMAT_OPTIONS),
+      message : "You have submitted exam named " + exam.title + (isLate || isPastCloseAt ? " (LATE SUBMISSION)" : "") + " at " + new Date().toLocaleString('en-IN', DATE_FORMAT_OPTIONS),
       createdAt: new Date(),
      });
 
@@ -235,7 +364,7 @@ export const submitExam = wrapAsync(async (req, res, next) => {
 
 
      res.status(200).json({
-       message: "Exam submitted successfully",
+       message: isLate || isPastCloseAt ? "Exam submitted successfully (Too Late! Submission penalty applied)" : "Exam submitted successfully",
        exam: {
          title: exam.title,
          examId: exam._id,
@@ -248,6 +377,35 @@ export const submitExam = wrapAsync(async (req, res, next) => {
 
 
 })
+
+
+export const saveResponses = wrapAsync(async (req, res, next) => {
+  const { examId, responses } = req.body;
+  const { _id } = req.user;
+
+  if (!examId) return next(new ExpressError(400, "examId is required"));
+  if (!responses) return next(new ExpressError(400, "responses are required"));
+
+  const responseDoc = await ExamResponses.findOne({
+    exam: examId,
+    student: _id,
+  });
+
+  if (!responseDoc) {
+    return next(new ExpressError(400, "No exam response found to save."));
+  }
+
+  if (responseDoc.status === "submitted") {
+    return next(new ExpressError(400, "Exam already submitted"));
+  }
+
+  responseDoc.answers = responses;
+  await responseDoc.save();
+
+  res.status(200).json({
+    message: "Responses saved successfully",
+  });
+});
 
 
 export const getReports = wrapAsync(async (req, res, next) => {

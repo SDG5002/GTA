@@ -40,7 +40,7 @@ export const sendMarksEmail = async (
             <h2>Hello ${studentName},</h2>
             <p>Your exam results for <strong>${examName}</strong>, conducted by 
             <strong>Professor ${professorName}</strong>, are as follows:</p>
-            <p style="color: #52f40cff;  ><strong >Score:</strong> ${score} / ${totalMarks}</p>
+            <p style="color: #52f40cff;"><strong>Score:</strong> ${score} / ${totalMarks}</p>
             <p>Thank you.</p>
           `;
   try {

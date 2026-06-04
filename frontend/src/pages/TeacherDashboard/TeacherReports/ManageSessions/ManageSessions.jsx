@@ -84,15 +84,21 @@ const ManageSessions = () => {
               <td>{session.studentName}</td>
               <td>{session.studentEmail}</td>
               <td>
-                <span
-                  className={`sessionpage-status ${
-                    session.status === "live"
-                      ? "sessionpage-status-live"
-                      : "sessionpage-status-submitted"
-                  }`}
-                >
-                  {session.status}
-                </span>
+                {session.autoSubmitted ? (
+                  <span className="sessionpage-status sessionpage-status-auto" title="Exam was auto-submitted due to tab switching or reload violations">
+                    ⚠ Auto Submitted
+                  </span>
+                ) : (
+                  <span
+                    className={`sessionpage-status ${
+                      session.status === "live"
+                        ? "sessionpage-status-live"
+                        : "sessionpage-status-submitted"
+                    }`}
+                  >
+                    {session.status}
+                  </span>
+                )}
               </td>
               <td>
                 {session.status === "live" ?

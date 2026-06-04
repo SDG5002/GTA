@@ -11,7 +11,7 @@ function SetExam() {
   const [showModal, setShowModal] = useState(false);
   const [examSecurity, setExamSecurity] = useState({ code: "", password: "" });
   const [error, setError] = useState("");
-  const [aiData, setAiData] = useState(null);
+  
   const [submit,setSubmit]=useState(false);
   const navigate = useNavigate();
 

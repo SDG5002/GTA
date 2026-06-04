@@ -6,7 +6,6 @@ import userRoutes from "./routes/userRoutes.js";
 import cors from "cors";
 import ProfRoutes from "./routes/ProfRoutes.js";
 import StudentRoutes from "./routes/StudentRoute.js";
-import { startUserCleanupJob } from "./cronJobs/userCleanupJob.js";
 
 
 
@@ -19,6 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+//GOOGLE O_AUTH should works hence it is necesasry to allow browser to open the cross orign browser window
 app.use((req, res, next) => {
   res.setHeader(
     "Cross-Origin-Opener-Policy",
@@ -38,7 +38,7 @@ app.use(cors({
 }));
 
 
-startUserCleanupJob();
+
 
 app.use("/user", userRoutes);
 app.use("/professor", ProfRoutes);
